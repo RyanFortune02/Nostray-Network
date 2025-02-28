@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +30,55 @@ SECRET_KEY = 'django-insecure-5fiqkco)@@w3o@$o=zaupj)*94r55xe_#m6o^dsobuuo8v)d=)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"] #Allowing all hosts
+
+"""
+JWT Authentication Configuration
+===============================
+
+This configuration sets up JSON Web Token (JWT) authentication for the Django REST Framework API:
+
+REST_FRAMEWORK:
+-------------
+1. DEFAULT_AUTHENTICATION_CLASSES:
+   - Uses 'rest_framework_simplejwt.authentication.JWTAuthentication' as the primary authentication method
+   - Instructs Django REST Framework to verify JWT tokens sent in request headers
+
+2. DEFAULT_PERMISSION_CLASSES:
+   - Sets 'rest_framework.permissions.IsAuthenticated' as the default permission
+   - Ensures that only authenticated users can access API endpoints by default
+   - Unauthenticated requests will receive 401 Unauthorized responses
+
+SIMPLE_JWT:
+---------
+1. ACCESS_TOKEN_LIFETIME: timedelta(minutes=30)
+   - Access tokens are valid for 30 minutes
+   - These tokens grant actual API access
+   - Short lifetime improves security by limiting exposure if compromised
+
+2. REFRESH_TOKEN_LIFETIME: timedelta(days=1)
+   - Refresh tokens are valid for 24 hours
+   - Used to obtain new access tokens when they expire
+   - Allows users to maintain sessions without frequent re-authentication
+
+This two-token system implements security best practices by separating authentication concerns:
+- Short-lived access tokens minimize potential damage from token theft
+- Longer-lived refresh tokens provide convenience without compromising security
+"""
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
 
 
 # Application definition
@@ -37,6 +90,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "api",
+    "rest_framework",
+    "corsheaders", #used for cross-origin resource sharing aka when frontend and backend are on different servers
 ]
 
 MIDDLEWARE = [
@@ -47,6 +103,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -121,3 +178,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOW_ALL_ORIGINS = True #Allowing all origins, so should change for production
+CORS_ALLOW_CREDENTIALS = True  #Allowing credentials to be sent with requests
