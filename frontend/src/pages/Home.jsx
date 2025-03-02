@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-
+import Note from "../components/Note";
+import "../styles/Home.css";
 function Home() {
   //first will send authorized request to grab all the notes created by the user
   const [notes, setNotes] = useState([]);
@@ -25,13 +26,16 @@ function Home() {
 
   const deleteNote = (id) => {
     api
-      .delete(`/api/notes/delete/${id}/`)
+      .delete(`/api/notes/${id}/`)
       .then((res) => {
         if (res.status === 204) alert("Note Deleted");
         else alert("Error Deleting Note");
+        getNotes(); //best practice should be instead of regetting all notes to just remove the note from the state on the front end (notes array)
       })
-      .catch((error) => alert(error));
-    getNotes(); //best practice should be instead of regetting all notes to just remove the note from the state on the front end (notes array)
+      .catch((error) => {
+        if (error.response?.status === 401) alert("You need to authenticate");
+        else alert(error);
+      });
   };
 
   const createNote = (e) => {
@@ -41,9 +45,12 @@ function Home() {
       .then((res) => {
         if (res.status === 201) alert("Note Created");
         else alert("Error Creating Note");
+        getNotes(); //best practice should be instead of regetting all notes to just add the note to the state on the front end (notes array)
       })
-      .catch((error) => alert(error));
-    getNotes(); //best practice should be instead of regetting all notes to just add the note to the state on the front end (notes array)
+      .catch((error) => {
+        if (error.response?.status === 401) alert("You need to authenticate");
+        else alert(error);
+      });
   };
   /**
    * Using a form OnSubmit vs form action reloads just the form and not the whole page vs form action reloads the whole page
@@ -52,6 +59,9 @@ function Home() {
     <div>
       <div>
         <h2>Notes</h2>
+        {notes.map((note) => (
+          <Note note={note} onDelete={deleteNote} key={note.id} />
+        ))}
       </div>
       <h2>Create a Note</h2>
       <form onSubmit={createNote}>
