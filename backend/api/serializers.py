@@ -12,12 +12,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'password']
         extra_kwargs = {'password': {'write_only': True}}  #Want to accept password but not return it
-        #extra_kwargs is a dictionary that includes any additional keyword arguments that may be used to
-        # override the default field instance that is used for a particular field type.
         
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data) #** splits up the data into key value pairs
-        return user #Once user is validated by the serializer, it is created and returned
+        # Create user with only username and password
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            email=''  # Provide an empty email string
+        )
+        return user
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
