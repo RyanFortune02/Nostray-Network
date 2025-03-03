@@ -1,5 +1,10 @@
 # Authorization CRUD
 
+## Steps to run locally
+
+1. Activate local env (. env/Scripts/Activate.ps1)
+2. python -m pip install python-dotenv (if error)
+
 ## Resources Used
 
 - [Authentication/Users](https://www.youtube.com/watch?v=c-QsfbznSXI)

@@ -4,6 +4,7 @@ function NotFound() {
       <h1>404 Not Found</h1>
       <p>The page you're looking for does not exist</p>
       <h2>Take a sip of coffee and a deep breathe</h2>
+      <h2>Try logging in if you're signed out</h2>
     </div>
   );
 }
