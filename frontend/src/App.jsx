@@ -20,6 +20,15 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Add redirect from empty path to root path with slash (due to weird issue with authenticatipn at empty root path)*/}
+        <Route
+          path=""
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/"
           element={
@@ -31,7 +40,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
-        <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
