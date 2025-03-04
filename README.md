@@ -16,3 +16,4 @@
 - [Decorators user roles](https://medium.com/@farad.dev/managing-user-permissions-and-roles-in-django-a-hands-on-guide-f0ac6fa1f354)
 
 - [Database Planning](https://www.drawdb.app/)
+- [extending user class](https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html)
