@@ -1,35 +1,63 @@
-from django.shortcuts import render
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from rest_framework import generics
 from .serializers import UserSerializer, NoteSerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Note
+from rest_framework.permissions import AllowAny
+from .models import Note, StrictPermissions
+
+
+class eUserRoles:
+    CEO, _ = Group.objects.get_or_create(name="ceo")
+    BOARD, _ = Group.objects.get_or_create(name="board")
+    HR, _ = Group.objects.get_or_create(name="hr")
+    HEAD_CAREGIVER, _ = Group.objects.get_or_create(name="head caregiver")
+    CAREGIVER, _ = Group.objects.get_or_create(name="caregiver")
+    VOLUNTEER, _ = Group.objects.get_or_create(name="volunteer")
+
 
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated] #cannot call this root unless you are authenticated and pass a proper jwt token
-    
-    def get_queryset(self):
-        user = self.request.user #gives us the user that is currently logged in (authenticated)
-        return Note.objects.filter(author=user) #returns all notes by the user that is currently logged in
-    #Generic views can be left as is, but if you want 'custom functionality' you can override the methods
-    #Look below
-    def perform_create(self, serializer):
-        if serializer.is_valid():
-            serializer.save(author=self.request.user)#default serializer will not include author as it is read only
-            # SO we need to manually add the author to the serializer
-        else:
-            print(serializer.errors) #serializer will check all the fields and return any errors that may have occured
 
-class NoteDelete(generics.DestroyAPIView):
-    serializer_class = NoteSerializer
-    permission_classes = [IsAuthenticated]
-    #make sure that you can only delete notes that user have created
+    # Checks for authentication AND permissions
+    permission_classes = [StrictPermissions]
+
     def get_queryset(self):
+        """
+        Gets all notes by the user (if they are allowed to).
+        """
         user = self.request.user
         return Note.objects.filter(author=user)
 
+    def perform_create(self, serializer):
+        if serializer.is_valid():
+            # default serializer will not include author as it is read only
+            # SO we need to manually add the author to the serializer
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+
+
+class NoteDelete(generics.DestroyAPIView):
+    serializer_class = NoteSerializer
+    permission_classes = [StrictPermissions]
+
+    def get_queryset(self):
+        """
+        Gets all notes by the user (if they are allowed to).
+        """
+        user = self.request.user
+        return Note.objects.filter(author=user)
+
+
 class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all() #list of all USer objects so that we don't create duplicate users
+    # List of all User objects so that we don't create duplicate users
+    queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [AllowAny] #Gives permission to anyone (even non-authenticated users) to create a user
+
+    # Anyone can register as a Volunteer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        response = self.create(request, *args, **kwargs)
+        new_user = User.objects.get_by_natural_key(response.data["username"])
+        new_user.groups.set([eUserRoles.VOLUNTEER])
+        return response
