@@ -2,8 +2,46 @@
 
 ## Steps to run locally
 
-1. Activate local env (. env/Scripts/Activate.ps1)
-2. python -m pip install python-dotenv (if error)
+### Backend setup
+
+In the `backend` directory...
+
+It is recommended to use a virtual environment. You can create one
+with:
+
+```sh
+python -m venv .venv
+```
+
+Then, install the dependencies from the included `requirements.txt` file:
+
+```sh
+pip install -r requirements.txt
+```
+
+Try to make migrations, in case any were missed:
+
+```sh
+python manage.py makemigrations
+```
+
+Then apply the migrations to the database:
+
+```sh
+python manage.py migrate
+```
+
+Ensure the user roles are initialized:
+
+```sh
+python manage.py create_roles
+```
+
+Then start the server with:
+
+```sh
+python manage.py runserver
+```
 
 ## Resources Used
 
