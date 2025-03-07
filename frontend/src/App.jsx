@@ -42,20 +42,39 @@ function App() {
         <Route
           path="/dashboard/*"
           element={
-            <ProtectedRoute>
-              <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden">
-                <div className="fixed inset-0 z-0">
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 opacity-80" />
-                  <div className="absolute inset-0 backdrop-blur-sm" />
-                </div>
-                <Sidebar />
-                <Routes>
-                  <Route path="/overview" element={<OverviewPage />} />
-                  <Route path="/animals" element={<AnimalsPage />} />
-                  <Route path="/hr" element={<HRPage />} />
-                </Routes>
+            <div className="flex h-screen bg-gray-900 text-gray-100 overflow-hidden">
+              <div className="fixed inset-0 z-0">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 opacity-80" />
+                <div className="absolute inset-0 backdrop-blur-sm" />
               </div>
-            </ProtectedRoute>
+              <Sidebar />
+              <Routes>
+                <Route
+                  path="overview"
+                  element={
+                    <ProtectedRoute>
+                      <OverviewPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="animals"
+                  element={
+                    <ProtectedRoute>
+                      <AnimalsPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="hr"
+                  element={
+                    <ProtectedRoute>
+                      <HRPage />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </div>
           }
         />
 

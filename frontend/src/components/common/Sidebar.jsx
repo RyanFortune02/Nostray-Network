@@ -19,22 +19,37 @@ const SIDEBAR_ITEMS = [
     color: "#6366f1",
     href: "/dashboard/overview",
   },
-  { name: "Animals", icon: PawPrint, color: "#8B5CF6", href: "/animals" },
+  {
+    name: "Animals",
+    icon: PawPrint,
+    color: "#8B5CF6",
+    href: "/dashboard/animals",
+  },
   {
     name: "Volunteers",
     icon: HelpingHand,
     color: "#EC4899",
-    href: "/volunteers",
+    href: "/dashboard/volunteers",
   },
-  { name: "Messages", icon: Mails, color: "#10B981", href: "/messages" },
-  { name: "HR", icon: Users, color: "#F59E0B", href: "/hr" },
+  {
+    name: "Messages",
+    icon: Mails,
+    color: "#10B981",
+    href: "/dashboard/messages",
+  },
+  { name: "HR", icon: Users, color: "#F59E0B", href: "/dashboard/hr" },
   {
     name: "Analytics",
     icon: ChartNoAxesCombined,
     color: "#3B82F6",
-    href: "/analytics",
+    href: "/dashboard/analytics",
   },
-  { name: "Settings", icon: Settings, color: "#6EE7B7", href: "/settings" },
+  {
+    name: "Settings",
+    icon: Settings,
+    color: "#6EE7B7",
+    href: "/dashboard/settings",
+  },
 ];
 
 const Sidebar = () => {
