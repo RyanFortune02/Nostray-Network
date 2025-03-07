@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import generics
-from .serializers import UserSerializer, NoteSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from .serializers import UserSerializer, NoteSerializer
 from .models import Note, StrictPermissions
 
 
@@ -12,6 +14,17 @@ class eUserRoles:
     HEAD_CAREGIVER, _ = Group.objects.get_or_create(name="head caregiver")
     CAREGIVER, _ = Group.objects.get_or_create(name="caregiver")
     VOLUNTEER, _ = Group.objects.get_or_create(name="volunteer")
+
+
+# View to get user roles 
+class UserRolesView(APIView):
+    """API endpoint that returns the roles (groups) of the authenticated user."""
+    
+    def get(self, request):
+        """Get all group names for the authenticated user."""
+        user = request.user
+        roles = [group.name for group in user.groups.all()]
+        return Response({"roles": roles})
 
 
 class NoteListCreate(generics.ListCreateAPIView):

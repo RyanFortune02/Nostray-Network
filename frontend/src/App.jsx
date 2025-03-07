@@ -15,6 +15,7 @@ import HRPage from "./DashboardPages/HRPage";
 // Components
 import Sidebar from "./components/common/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RoleBasedRoute from "./components/RoleBasedRoute";
 
 function Logout() {
   localStorage.clear();
@@ -30,7 +31,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Add redirect from empty path to root path with slash (due to weird issue with authenticatipn at empty root path)*/}
         {/* Public pages Routes */}
         <Route path="" element={<PublicPage />} />
         <Route path="/" element={<PublicPage />} />
@@ -49,6 +49,7 @@ function App() {
               </div>
               <Sidebar />
               <Routes>
+                {/* Overview accessible to all authenticated users */}
                 <Route
                   path="overview"
                   element={
@@ -57,6 +58,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                {/* Animals accessible to all authenticated users */}
                 <Route
                   path="animals"
                   element={
@@ -65,11 +67,39 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                {/* HR page restricted to HR and CEO roles */}
                 <Route
                   path="hr"
                   element={
-                    <ProtectedRoute>
+                    <RoleBasedRoute allowedRoles={["hr", "ceo"]}>
                       <HRPage />
+                    </RoleBasedRoute>
+                  }
+                />
+                {/* Analytics page restricted to CEO role only */}
+                <Route
+                  path="analytics"
+                  element={
+                    <RoleBasedRoute allowedRoles={["ceo"]}>
+                      <div className="flex-1 overflow-auto relative z-10">
+                        <div className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
+                          <h1 className="text-2xl font-bold">
+                            Analytics Dashboard
+                          </h1>
+                          <p className="mt-4">
+                            This page is only accessible to CEOs.
+                          </p>
+                        </div>
+                      </div>
+                    </RoleBasedRoute>
+                  }
+                />
+                {/* Other routes */}
+                <Route
+                  path="*"
+                  element={
+                    <ProtectedRoute>
+                      <NotFound />
                     </ProtectedRoute>
                   }
                 />
