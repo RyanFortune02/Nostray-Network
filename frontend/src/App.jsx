@@ -11,6 +11,7 @@ import "./index.css";
 import OverviewPage from "./DashboardPages/OverviewPage";
 import AnimalsPage from "./DashboardPages/AnimalsPage";
 import HRPage from "./DashboardPages/HRPage";
+import MessagesPage from "./DashboardPages/MessagesPage";
 
 // Components
 import Sidebar from "./components/common/Sidebar";
@@ -74,6 +75,15 @@ function App() {
                     <RoleBasedRoute allowedRoles={["hr", "ceo"]}>
                       <HRPage />
                     </RoleBasedRoute>
+                  }
+                />
+                {/* Messages accessible to all authenticated users */}
+                <Route
+                  path="messages"
+                  element={
+                    <ProtectedRoute>
+                      <MessagesPage />
+                    </ProtectedRoute>
                   }
                 />
                 {/* Analytics page restricted to CEO role only */}
