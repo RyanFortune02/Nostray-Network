@@ -1,14 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 from rest_framework.permissions import DjangoModelPermissions
-from .taxonomic_ranks import (
-    TaxonomicDomain,
-    TaxonomicKingdom,
-    TaxonomicPhylum,
-    TaxonomicClass,
-    TaxonomicOrder,
-    TaxonomicFamily,
-    TaxonomicGenus,
+from .taxonomic_hierarchy import TaxonomicHierarchy
+from .taxonomic_classes import (
+    eTaxonomicDomain,
+    eTaxonomicKingdom,
+    eTaxonomicPhylum,
+    eTaxonomicClass,
+    eTaxonomicOrder,
+    eTaxonomicFamily,
+    eTaxonomicGenus,
 )
 
 
@@ -75,14 +77,56 @@ class AnimalStatus(models.TextChoices):
 
 
 class TaxonomicRank(models.Model):
-    domain = models.CharField(max_length=50, choices=TaxonomicDomain.choices)
-    kingdom = models.CharField(max_length=50, choices=TaxonomicKingdom.choices)
-    phylum = models.CharField(max_length=50, choices=TaxonomicPhylum.choices)
-    class_field = models.CharField(max_length=50, choices=TaxonomicClass.choices)
-    order = models.CharField(max_length=50, choices=TaxonomicOrder.choices)
-    family = models.CharField(max_length=50, choices=TaxonomicFamily.choices)
-    genus = models.CharField(max_length=50, choices=TaxonomicGenus.choices)
+    domain = models.CharField(max_length=50, choices=eTaxonomicDomain.choices)
+    kingdom = models.CharField(max_length=50, choices=eTaxonomicKingdom.choices)
+    phylum = models.CharField(max_length=50, choices=eTaxonomicPhylum.choices)
+    class_field = models.CharField(max_length=50, choices=eTaxonomicClass.choices)
+    order = models.CharField(max_length=50, choices=eTaxonomicOrder.choices)
+    family = models.CharField(max_length=50, choices=eTaxonomicFamily.choices)
+    genus = models.CharField(max_length=50, choices=eTaxonomicGenus.choices)
     species = models.CharField(max_length=255)
+
+    def clean(self):
+        super().clean()
+        valid_kingdoms = TaxonomicHierarchy().TAXONOMIC_HIERARCHY.get(self.domain, {})
+        if self.kingdom not in valid_kingdoms:
+            raise ValidationError(
+                f"Kingdom must be one of {list(valid_kingdoms.keys())} for domain {self.domain}."
+            )
+
+        valid_phyla = valid_kingdoms.get(self.kingdom, {})
+        if self.phylum not in valid_phyla:
+            raise ValidationError(
+                f"Phylum must be one of {list(valid_phyla.keys())} for kingdom {self.kingdom}."
+            )
+
+        valid_classes = valid_phyla.get(self.phylum, {})
+        if self.class_field not in valid_classes:
+            raise ValidationError(
+                f"Class must be one of {list(valid_classes.keys())} for phylum {self.phylum}."
+            )
+
+        valid_orders = valid_classes.get(self.class_field, {})
+        if self.order not in valid_orders:
+            raise ValidationError(
+                f"Order must be one of {list(valid_orders.keys())} for class {self.class_field}."
+            )
+
+        valid_families = valid_orders.get(self.order, {})
+        if self.family not in valid_families:
+            raise ValidationError(
+                f"Family must be one of {list(valid_families.keys())} for order {self.order}."
+            )
+
+        valid_genera = valid_families.get(self.family, [])
+        if self.genus not in valid_genera:
+            raise ValidationError(
+                f"Genus must be one of {valid_genera} for family {self.family}."
+            )
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
 
 
 class Animal(models.Model):
