@@ -1,10 +1,29 @@
 from django.contrib.auth.models import User, Group
+from django.db import models
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .serializers import UserSerializer, NoteSerializer
-from .models import Note, StrictPermissions
+from .taxonomic_hierarchy import TaxonomicHierarchy
+from .serializers import (
+    UserSerializer,
+    NoteSerializer,
+    NewsSerializer,
+    AnimalSerializer,
+    VolunteerProfileSerializer,
+    MessageSerializer,
+)
+from .models import (
+    Note,
+    StrictPermissions,
+    News,
+    Animal,
+    VolunteerProfile,
+    NewsType,
+    AnimalStatus,
+    UserStatus,
+    Message,
+)
 
 
 class eUserRoles:
@@ -16,10 +35,10 @@ class eUserRoles:
     VOLUNTEER, _ = Group.objects.get_or_create(name="volunteer")
 
 
-# View to get user roles 
+# View to get user roles
 class UserRolesView(APIView):
     """API endpoint that returns the roles (groups) of the authenticated user."""
-    
+
     def get(self, request):
         """Get all group names for the authenticated user."""
         user = request.user
@@ -71,6 +90,138 @@ class CreateUserView(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         response = self.create(request, *args, **kwargs)
-        new_user = User.objects.get_by_natural_key(response.data["username"])
-        new_user.groups.set([eUserRoles.VOLUNTEER])
         return response
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        user.groups.set([eUserRoles.VOLUNTEER])
+        return user
+
+
+class TaxonomicRankChoicesView(APIView):
+    """
+    Returns valid choices for a specific taxonomic rank.
+    """
+
+    permission_classes = [StrictPermissions]
+    RANK_ORDER = [
+        "domain",
+        "kingdom",
+        "phylum",
+        "class_field",
+        "order",
+        "family",
+        "genus",
+    ]
+
+    def get(self, request):
+        """
+        Get valid choices for requested rank.
+        """
+        requested_rank = request.query_params.get("rank")
+        if not requested_rank or requested_rank not in self.RANK_ORDER:
+            return Response({"error": "Invalid or missing rank parameter"}, status=400)
+
+        rank_index = self.RANK_ORDER.index(requested_rank)
+
+        current_level = TaxonomicHierarchy().TAXONOMIC_HIERARCHY
+
+        for parent_rank in self.RANK_ORDER[:rank_index]:
+            selected_value = request.query_params.get(parent_rank)
+            if not selected_value:
+                break
+
+            if isinstance(current_level, dict) and selected_value in current_level:
+                current_level = current_level[selected_value]
+            else:
+                return Response(
+                    {"error": f"Invalid {parent_rank} selection"}, status=400
+                )
+
+        if isinstance(current_level, dict):
+            choices = list(current_level.keys())
+        else:
+            choices = current_level if isinstance(current_level, list) else []
+
+        return Response({requested_rank: choices})
+
+
+class NewsListCreate(generics.ListCreateAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    permission_classes = [StrictPermissions]
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class NewsDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    permission_classes = [StrictPermissions]
+
+
+class AnimalListCreate(generics.ListCreateAPIView):
+    queryset = Animal.objects.all()
+    serializer_class = AnimalSerializer
+    permission_classes = [StrictPermissions]
+
+
+class AnimalDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Animal.objects.all()
+    serializer_class = AnimalSerializer
+    permission_classes = [StrictPermissions]
+
+
+class VolunteerProfileDetail(generics.RetrieveUpdateAPIView):
+    serializer_class = VolunteerProfileSerializer
+    permission_classes = [StrictPermissions]
+    queryset = VolunteerProfile.objects.all()
+
+    def get_object(self):
+        return self.queryset.get(user=self.request.user)
+
+
+class ChoicesView(APIView):
+    """
+    Base view for returning model choices.
+    """
+
+    permission_classes = [StrictPermissions]
+    choices = None
+
+    def get(self, request):
+        return Response({"choices": [value for _, value in self.choices.choices]})
+
+
+class NewsTypeChoicesView(ChoicesView):
+    choices = NewsType
+
+
+class AnimalStatusChoicesView(ChoicesView):
+    choices = AnimalStatus
+
+
+class UserStatusChoicesView(ChoicesView):
+    choices = UserStatus
+
+
+class MessageListCreate(generics.ListCreateAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = [StrictPermissions]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(models.Q(sender=user) | models.Q(receiver=user))
+
+    def perform_create(self, serializer):
+        serializer.save(sender=self.request.user)
+
+
+class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = MessageSerializer
+    permission_classes = [StrictPermissions]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(models.Q(sender=user) | models.Q(receiver=user))
