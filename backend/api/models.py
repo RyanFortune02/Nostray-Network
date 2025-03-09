@@ -60,7 +60,7 @@ class UserStatus(models.TextChoices):
 class VolunteerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
-    hobbies = models.BinaryField(blank=True, null=True)
+    hobbies = models.TextField(blank=True, null=True)
     town = models.CharField(max_length=100, blank=True, null=True)
     image_url = models.URLField(max_length=255, blank=True, null=True)
     status = models.CharField(
