@@ -54,18 +54,34 @@ class NoteListCreate(generics.ListCreateAPIView):
 
     def get_queryset(self):
         """
-        Gets all notes by the user (if they are allowed to).
+        Gets notes user has permission to view.
         """
         user = self.request.user
-        return Note.objects.filter(author=user)
+        queryset = Note.objects.none()
+
+        for note in Note.objects.all():
+            if not note.boards:
+                if user.has_perm("api.view_note"):
+                    queryset |= Note.objects.filter(id=note.id)
+            elif Note.check_board_permissions(user, "view", note.boards):
+                queryset |= Note.objects.filter(id=note.id)
+
+        return queryset.distinct()
 
     def perform_create(self, serializer):
-        if serializer.is_valid():
-            # default serializer will not include author as it is read only
-            # SO we need to manually add the author to the serializer
-            serializer.save(author=self.request.user)
-        else:
+        if not serializer.is_valid():
             print(serializer.errors)
+            return
+
+        boards = serializer.validated_data.get("boards", [])
+        if boards and not Note.check_board_permissions(
+            self.request.user, "add", boards
+        ):
+            raise PermissionError(
+                "You don't have permission to post to one or more of these boards"
+            )
+
+        serializer.save(author=self.request.user)
 
 
 class NoteDelete(generics.DestroyAPIView):
@@ -74,10 +90,19 @@ class NoteDelete(generics.DestroyAPIView):
 
     def get_queryset(self):
         """
-        Gets all notes by the user (if they are allowed to).
+        Gets notes the user has permission to delete.
         """
         user = self.request.user
-        return Note.objects.filter(author=user)
+        queryset = Note.objects.none()
+
+        for note in Note.objects.all():
+            if not note.boards:
+                if user.has_perm("api.delete_note"):
+                    queryset |= Note.objects.filter(id=note.id)
+            elif Note.check_board_permissions(user, "delete", note.boards):
+                queryset |= Note.objects.filter(id=note.id)
+
+        return queryset.distinct()
 
 
 class CreateUserView(generics.CreateAPIView):

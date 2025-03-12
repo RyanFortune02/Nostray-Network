@@ -36,9 +36,30 @@ class StrictPermissions(DjangoModelPermissions):
 
 
 class Note(models.Model):
+    class Meta:
+        permissions = [
+            ("ceo_view_note", "Can view notes sent to the CEO board."),
+            ("ceo_add_note", "Can add notes to the CEO board."),
+            ("ceo_delete_note", "Can delete notes sent to the CEO board."),
+            ("hr_view_note", "Can view notes sent to the HR board."),
+            ("hr_add_note", "Can add notes to the HR board."),
+            ("hr_delete_note", "Can delete notes sent to the HR board."),
+            ("board_view_note", "Can view notes sent to the Board of Directors board."),
+            ("board_add_note", "Can add notes to the Board of Directors board."),
+            (
+                "board_delete_note",
+                "Can delete notes sent to the Board of Directors board.",
+            ),
+            ("volunteer_view_note", "Can view notes sent to the Volunteer board."),
+            ("volunteer_add_note", "Can add notes to the Volunteer board."),
+            ("volunteer_delete_note", "Can delete notes sent to the Volunteer board."),
+        ]
+
     title = models.CharField(max_length=100)
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    boards = models.JSONField(default=list)
 
     # sets time when note is created
     created_at = models.DateTimeField(auto_now_add=True)
@@ -51,6 +72,34 @@ class Note(models.Model):
 
     def __str__(self):
         return self.title
+
+    @classmethod
+    def check_board_permissions(cls, user, action, boards):
+        """
+        Check if the user has permission for all specified boards.
+        For viewing, user only needs permission for any one of the boards.
+        """
+        if not boards:
+            return True
+
+        permission_map = {
+            "view": "{}_view_note",
+            "add": "{}_add_note",
+            "delete": "{}_delete_note",
+        }
+
+        if action == "view":
+            # For viewing, only need permission for one board
+            return any(
+                user.has_perm(f"api.{permission_map[action].format(board)}")
+                for board in boards
+            )
+        else:
+            # For add/delete, need permission for all boards
+            return all(
+                user.has_perm(f"api.{permission_map[action].format(board)}")
+                for board in boards
+            )
 
 
 class UserStatus(models.TextChoices):

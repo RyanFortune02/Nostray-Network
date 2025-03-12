@@ -15,6 +15,8 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
+
+        # Profile permissions
         profile_content_type = ContentType.objects.get_for_model(VolunteerProfile)
         view_profile = Permission.objects.get(
             codename="view_volunteerprofile",
@@ -32,6 +34,8 @@ class Command(BaseCommand):
             codename="delete_volunteerprofile",
             content_type=profile_content_type,
         )
+
+        # Note permissions
         note_content_type = ContentType.objects.get_for_model(Note)
         view_note = Permission.objects.get(
             codename="view_note",
@@ -49,6 +53,53 @@ class Command(BaseCommand):
             codename="delete_note",
             content_type=note_content_type,
         )
+
+        # Note permissions by board
+        ## CEO
+        ceo_view_note = Permission.objects.get(
+            codename="ceo_view_note", content_type=note_content_type
+        )
+        ceo_add_note = Permission.objects.get(
+            codename="ceo_add_note", content_type=note_content_type
+        )
+        ceo_delete_note = Permission.objects.get(
+            codename="ceo_view_note", content_type=note_content_type
+        )
+
+        ## HR
+        hr_view_note = Permission.objects.get(
+            codename="hr_view_note", content_type=note_content_type
+        )
+        hr_add_note = Permission.objects.get(
+            codename="hr_add_note", content_type=note_content_type
+        )
+        hr_delete_note = Permission.objects.get(
+            codename="hr_view_note", content_type=note_content_type
+        )
+
+        ## Board of Directors
+        board_view_note = Permission.objects.get(
+            codename="board_view_note", content_type=note_content_type
+        )
+        board_add_note = Permission.objects.get(
+            codename="board_add_note", content_type=note_content_type
+        )
+        board_delete_note = Permission.objects.get(
+            codename="board_view_note", content_type=note_content_type
+        )
+
+        ## Volunteers
+        volunteer_view_note = Permission.objects.get(
+            codename="volunteer_view_note", content_type=note_content_type
+        )
+        volunteer_add_note = Permission.objects.get(
+            codename="volunteer_add_note", content_type=note_content_type
+        )
+        volunteer_delete_note = Permission.objects.get(
+            codename="volunteer_view_note", content_type=note_content_type
+        )
+
+        # Animal permissions
         animal_content_type = ContentType.objects.get_for_model(Animal)
         view_animal = Permission.objects.get(
             codename="view_animal",
@@ -66,6 +117,8 @@ class Command(BaseCommand):
             codename="delete_animal",
             content_type=animal_content_type,
         )
+
+        # News permissions
         news_content_type = ContentType.objects.get_for_model(News)
         view_news = Permission.objects.get(
             codename="view_news", content_type=news_content_type
@@ -79,6 +132,8 @@ class Command(BaseCommand):
         delete_news = Permission.objects.get(
             codename="delete_news", content_type=news_content_type
         )
+
+        # Message permissions
         message_content_type = ContentType.objects.get_for_model(Message)
         view_message = Permission.objects.get(
             codename="view_message", content_type=message_content_type
@@ -92,6 +147,8 @@ class Command(BaseCommand):
         delete_message = Permission.objects.get(
             codename="delete_message", content_type=message_content_type
         )
+
+        # Set permissions per role
         CEO, _ = Group.objects.get_or_create(name="ceo")
         CEO.permissions.set(
             [
