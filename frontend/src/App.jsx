@@ -12,6 +12,7 @@ import OverviewPage from "./DashboardPages/OverviewPage";
 import AnimalsPage from "./DashboardPages/AnimalsPage";
 import HRPage from "./DashboardPages/HRPage";
 import MessagesPage from "./DashboardPages/MessagesPage";
+import AnalyticsPage from "./DashboardPages/AnalyticsPage";
 
 // Components
 import Sidebar from "./components/common/Sidebar";
@@ -91,16 +92,7 @@ function App() {
                   path="analytics"
                   element={
                     <RoleBasedRoute allowedRoles={["ceo"]}>
-                      <div className="flex-1 overflow-auto relative z-10">
-                        <div className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
-                          <h1 className="text-2xl font-bold">
-                            Analytics Dashboard
-                          </h1>
-                          <p className="mt-4">
-                            This page is only accessible to CEOs.
-                          </p>
-                        </div>
-                      </div>
+                      <AnalyticsPage />
                     </RoleBasedRoute>
                   }
                 />
