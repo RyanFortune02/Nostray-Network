@@ -72,7 +72,7 @@ class UserSerializer(serializers.ModelSerializer):
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = ["id", "title", "content", "author", "created_at"]
+        fields = ["id", "title", "content", "author", "boards", "created_at"]
         extra_kwargs = {
             "author": {"read_only": True}
         }  # should be able to read author but not write it (based on account/user)
