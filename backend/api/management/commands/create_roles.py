@@ -63,7 +63,7 @@ class Command(BaseCommand):
             codename="ceo_add_note", content_type=note_content_type
         )
         ceo_delete_note = Permission.objects.get(
-            codename="ceo_view_note", content_type=note_content_type
+            codename="ceo_delete_note", content_type=note_content_type
         )
 
         ## HR
@@ -74,7 +74,7 @@ class Command(BaseCommand):
             codename="hr_add_note", content_type=note_content_type
         )
         hr_delete_note = Permission.objects.get(
-            codename="hr_view_note", content_type=note_content_type
+            codename="hr_delete_note", content_type=note_content_type
         )
 
         ## Board of Directors
@@ -85,7 +85,7 @@ class Command(BaseCommand):
             codename="board_add_note", content_type=note_content_type
         )
         board_delete_note = Permission.objects.get(
-            codename="board_view_note", content_type=note_content_type
+            codename="board_delete_note", content_type=note_content_type
         )
 
         ## Volunteers
@@ -96,7 +96,7 @@ class Command(BaseCommand):
             codename="volunteer_add_note", content_type=note_content_type
         )
         volunteer_delete_note = Permission.objects.get(
-            codename="volunteer_view_note", content_type=note_content_type
+            codename="volunteer_delete_note", content_type=note_content_type
         )
 
         # Animal permissions
@@ -152,9 +152,27 @@ class Command(BaseCommand):
         CEO, _ = Group.objects.get_or_create(name="ceo")
         CEO.permissions.set(
             [
+                # General note permissions
                 view_note,
-                delete_note,
                 add_note,
+                change_note,
+                delete_note,
+                
+                # Board-specific note permissions for CEO
+                ceo_view_note,
+                ceo_add_note,
+                ceo_delete_note,
+                hr_view_note,
+                hr_add_note,
+                hr_delete_note,
+                board_view_note,
+                board_add_note,
+                board_delete_note,
+                volunteer_view_note,
+                volunteer_add_note,
+                volunteer_delete_note,
+                
+                # Other model permissions
                 view_animal,
                 add_animal,
                 change_animal,
@@ -175,6 +193,11 @@ class Command(BaseCommand):
             [
                 view_note,
                 delete_note,
+                # Board-specific permissions
+                board_view_note,
+                board_add_note,
+                board_delete_note,
+                # Other permissions
                 view_animal,
                 view_news,
                 add_news,
@@ -185,13 +208,25 @@ class Command(BaseCommand):
 
         HR, _ = Group.objects.get_or_create(name="hr")
         HR.permissions.set(
-            [view_note, view_animal, view_news, view_message, add_message]
+            [
+                view_note,
+                # HR-specific permissions
+                hr_view_note,
+                hr_add_note,
+                hr_delete_note,
+                # Other permissions
+                view_animal,
+                view_news,
+                view_message,
+                add_message,
+            ]
         )
 
         HEAD_CAREGIVER, _ = Group.objects.get_or_create(name="head caregiver")
         HEAD_CAREGIVER.permissions.set(
             [
                 view_note,
+                # Animal care permissions
                 view_animal,
                 add_animal,
                 change_animal,
@@ -220,9 +255,15 @@ class Command(BaseCommand):
         VOLUNTEER.permissions.set(
             [
                 view_note,
+                # Volunteer-specific permissions
+                volunteer_view_note,
+                volunteer_add_note,
+                volunteer_delete_note,
+                # Profile permissions
                 view_profile,
                 add_profile,
                 change_profile,
+                # Other permissions
                 view_animal,
                 view_news,
                 view_message,
