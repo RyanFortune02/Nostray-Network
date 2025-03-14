@@ -1,7 +1,16 @@
+from django.db.models import Model
+from enum import Enum
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from ...models import Note, VolunteerProfile, Animal, News, Message
+
+
+class ePermissionType(Enum):
+    VIEW = 0
+    ADD = 1
+    CHANGE = 2
+    DELETE = 3
 
 
 class Command(BaseCommand):
@@ -15,219 +24,145 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
+        def _get_permissions(model: type[Model], prefix: str = "") -> list[Permission]:
+            content_type: ContentType = ContentType.objects.get_for_model(model)
+
+            if prefix != "" and prefix[-1] != "_":
+                prefix = prefix + "_"
+
+            permissions: list[Permission] = [None, None, None, None]
+
+            for permission_type in ePermissionType:
+                codename: str = (
+                    prefix + permission_type.name.lower() + "_" + model._meta.model_name
+                )
+
+                try:
+                    permission: Permission = Permission.objects.get(
+                        codename=codename,
+                        content_type=content_type,
+                    )
+                    permissions[permission_type.value] = permission
+                    print(f"Found permission: {codename}")
+                except Permission.DoesNotExist:
+                    print(f"Permission {codename} does not exist - skipping")
+                    continue
+            return permissions
 
         # Profile permissions
-        profile_content_type = ContentType.objects.get_for_model(VolunteerProfile)
-        view_profile = Permission.objects.get(
-            codename="view_volunteerprofile",
-            content_type=profile_content_type,
-        )
-        add_profile = Permission.objects.get(
-            codename="add_volunteerprofile",
-            content_type=profile_content_type,
-        )
-        change_profile = Permission.objects.get(
-            codename="change_volunteerprofile",
-            content_type=profile_content_type,
-        )
-        delete_profile = Permission.objects.get(
-            codename="delete_volunteerprofile",
-            content_type=profile_content_type,
-        )
+        profile_permissions = _get_permissions(VolunteerProfile)
 
         # Note permissions
-        note_content_type = ContentType.objects.get_for_model(Note)
-        view_note = Permission.objects.get(
-            codename="view_note",
-            content_type=note_content_type,
-        )
-        add_note = Permission.objects.get(
-            codename="add_note",
-            content_type=note_content_type,
-        )
-        change_note = Permission.objects.get(
-            codename="change_note",
-            content_type=note_content_type,
-        )
-        delete_note = Permission.objects.get(
-            codename="delete_note",
-            content_type=note_content_type,
-        )
+        note_permissions = _get_permissions(Note)
 
         # Note permissions by board
         ## CEO
-        ceo_view_note = Permission.objects.get(
-            codename="ceo_view_note", content_type=note_content_type
-        )
-        ceo_add_note = Permission.objects.get(
-            codename="ceo_add_note", content_type=note_content_type
-        )
-        ceo_delete_note = Permission.objects.get(
-            codename="ceo_delete_note", content_type=note_content_type
-        )
+        ceo_note_permissions = _get_permissions(Note, "ceo")
 
         ## HR
-        hr_view_note = Permission.objects.get(
-            codename="hr_view_note", content_type=note_content_type
-        )
-        hr_add_note = Permission.objects.get(
-            codename="hr_add_note", content_type=note_content_type
-        )
-        hr_delete_note = Permission.objects.get(
-            codename="hr_delete_note", content_type=note_content_type
-        )
+        hr_note_permissions = _get_permissions(Note, "hr")
 
         ## Board of Directors
-        board_view_note = Permission.objects.get(
-            codename="board_view_note", content_type=note_content_type
-        )
-        board_add_note = Permission.objects.get(
-            codename="board_add_note", content_type=note_content_type
-        )
-        board_delete_note = Permission.objects.get(
-            codename="board_delete_note", content_type=note_content_type
-        )
+        board_note_permissions = _get_permissions(Note, "board")
 
         ## Volunteers
-        volunteer_view_note = Permission.objects.get(
-            codename="volunteer_view_note", content_type=note_content_type
-        )
-        volunteer_add_note = Permission.objects.get(
-            codename="volunteer_add_note", content_type=note_content_type
-        )
-        volunteer_delete_note = Permission.objects.get(
-            codename="volunteer_delete_note", content_type=note_content_type
-        )
+        volunteer_note_permissions = _get_permissions(Note, "volunteer")
 
         # Animal permissions
-        animal_content_type = ContentType.objects.get_for_model(Animal)
-        view_animal = Permission.objects.get(
-            codename="view_animal",
-            content_type=animal_content_type,
-        )
-        add_animal = Permission.objects.get(
-            codename="add_animal",
-            content_type=animal_content_type,
-        )
-        change_animal = Permission.objects.get(
-            codename="change_animal",
-            content_type=animal_content_type,
-        )
-        delete_animal = Permission.objects.get(
-            codename="delete_animal",
-            content_type=animal_content_type,
-        )
+        animal_permissions = _get_permissions(Animal)
 
         # News permissions
-        news_content_type = ContentType.objects.get_for_model(News)
-        view_news = Permission.objects.get(
-            codename="view_news", content_type=news_content_type
-        )
-        add_news = Permission.objects.get(
-            codename="add_news", content_type=news_content_type
-        )
-        change_news = Permission.objects.get(
-            codename="change_news", content_type=news_content_type
-        )
-        delete_news = Permission.objects.get(
-            codename="delete_news", content_type=news_content_type
-        )
+        news_permissions = _get_permissions(News)
 
         # Message permissions
-        message_content_type = ContentType.objects.get_for_model(Message)
-        view_message = Permission.objects.get(
-            codename="view_message", content_type=message_content_type
-        )
-        add_message = Permission.objects.get(
-            codename="add_message", content_type=message_content_type
-        )
-        change_message = Permission.objects.get(
-            codename="change_message", content_type=message_content_type
-        )
-        delete_message = Permission.objects.get(
-            codename="delete_message", content_type=message_content_type
-        )
+        message_permissions = _get_permissions(Message)
 
         # Set permissions per role
         CEO, _ = Group.objects.get_or_create(name="ceo")
         CEO.permissions.set(
             [
-                view_note,
-                delete_note,
-                add_note,
-                view_animal,
-                add_animal,
-                change_animal,
-                delete_animal,
-                view_news,
-                add_news,
-                change_news,
-                delete_news,
-                view_message,
-                add_message,
-                change_message,
-                delete_message,
+                note_permissions[ePermissionType.VIEW.value],
+                note_permissions[ePermissionType.DELETE.value],
+                note_permissions[ePermissionType.ADD.value],
+                animal_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.ADD.value],
+                animal_permissions[ePermissionType.CHANGE.value],
+                animal_permissions[ePermissionType.DELETE.value],
+                news_permissions[ePermissionType.VIEW.value],
+                news_permissions[ePermissionType.ADD.value],
+                news_permissions[ePermissionType.CHANGE.value],
+                news_permissions[ePermissionType.DELETE.value],
+                message_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.ADD.value],
+                message_permissions[ePermissionType.CHANGE.value],
+                message_permissions[ePermissionType.DELETE.value],
             ]
         )
 
         BOARD, _ = Group.objects.get_or_create(name="board")
         BOARD.permissions.set(
             [
-                view_note,
-                delete_note,
-                view_animal,
-                view_news,
-                add_news,
-                view_message,
-                add_message,
+                note_permissions[ePermissionType.VIEW.value],
+                note_permissions[ePermissionType.DELETE.value],
+                animal_permissions[ePermissionType.VIEW.value],
+                news_permissions[ePermissionType.VIEW.value],
+                news_permissions[ePermissionType.ADD.value],
+                message_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.ADD.value],
             ]
         )
 
         HR, _ = Group.objects.get_or_create(name="hr")
         HR.permissions.set(
-            [view_note, view_animal, view_news, view_message, add_message]
+            [
+                note_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.VIEW.value],
+                news_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.ADD.value],
+            ]
         )
 
         HEAD_CAREGIVER, _ = Group.objects.get_or_create(name="head caregiver")
         HEAD_CAREGIVER.permissions.set(
             [
-                view_note,
-                view_animal,
-                add_animal,
-                change_animal,
-                view_news,
-                add_news,
-                change_news,
-                view_message,
-                add_message,
+                note_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.ADD.value],
+                animal_permissions[ePermissionType.CHANGE.value],
+                news_permissions[ePermissionType.VIEW.value],
+                news_permissions[ePermissionType.ADD.value],
+                news_permissions[ePermissionType.CHANGE.value],
+                message_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.ADD.value],
             ]
         )
 
         CAREGIVER, _ = Group.objects.get_or_create(name="caregiver")
         CAREGIVER.permissions.set(
             [
-                view_note,
-                view_animal,
-                change_animal,
-                view_news,
-                add_news,
-                view_message,
-                add_message,
+                note_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.CHANGE.value],
+                news_permissions[ePermissionType.VIEW.value],
+                news_permissions[ePermissionType.ADD.value],
+                message_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.ADD.value],
             ]
         )
 
         VOLUNTEER, _ = Group.objects.get_or_create(name="volunteer")
         VOLUNTEER.permissions.set(
             [
-                view_note,
-                view_profile,
-                add_profile,
-                change_profile,
-                view_animal,
-                view_news,
-                view_message,
-                add_message,
-                change_message,
-                delete_message,
+                note_permissions[ePermissionType.VIEW.value],
+                profile_permissions[ePermissionType.VIEW.value],
+                profile_permissions[ePermissionType.ADD.value],
+                profile_permissions[ePermissionType.CHANGE.value],
+                animal_permissions[ePermissionType.VIEW.value],
+                news_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.VIEW.value],
+                message_permissions[ePermissionType.ADD.value],
+                message_permissions[ePermissionType.CHANGE.value],
+                message_permissions[ePermissionType.DELETE.value],
             ]
         )
