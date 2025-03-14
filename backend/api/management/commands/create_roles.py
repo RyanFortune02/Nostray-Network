@@ -192,6 +192,7 @@ class Command(BaseCommand):
         BOARD.permissions.set(
             [
                 view_note,
+                add_note,
                 delete_note,
                 # Board-specific permissions
                 board_view_note,
@@ -210,7 +211,8 @@ class Command(BaseCommand):
         HR.permissions.set(
             [
                 view_note,
-                add_note,  # Added general note creation permission
+                add_note,
+                delete_note,
                 # HR-specific permissions
                 hr_view_note,
                 hr_add_note,
@@ -227,6 +229,8 @@ class Command(BaseCommand):
         HEAD_CAREGIVER.permissions.set(
             [
                 view_note,
+                add_note,
+                delete_note,
                 # Animal care permissions
                 view_animal,
                 add_animal,
@@ -243,6 +247,8 @@ class Command(BaseCommand):
         CAREGIVER.permissions.set(
             [
                 view_note,
+                add_note,
+                delete_note,
                 view_animal,
                 change_animal,
                 view_news,
@@ -256,6 +262,8 @@ class Command(BaseCommand):
         VOLUNTEER.permissions.set(
             [
                 view_note,
+                add_note,
+                delete_note,
                 # Volunteer-specific permissions
                 volunteer_view_note,
                 volunteer_add_note,
