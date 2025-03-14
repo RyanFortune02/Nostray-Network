@@ -55,3 +55,4 @@ python manage.py runserver
 
 - [Database Planning](https://www.drawdb.app/)
 - [extending user class](https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html)
+- [React DOM router w/ netlify](https://answers.netlify.com/t/netlify-page-not-found-when-sharing-react-router-dom-based-links/11744/8)
