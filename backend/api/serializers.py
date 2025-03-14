@@ -8,6 +8,7 @@ from .models import (
     UserStatus,
     TaxonomicRank,
     Message,
+    Donation,
 )
 
 # Uses an ORM (Object RelationalMapping)- maps python objects to corresponding code that needs to be executed in the database
@@ -130,3 +131,9 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ["id", "sender", "receiver", "subject", "body", "timestamp"]
         extra_kwargs = {"timestamp": {"read_only": True}}
+
+
+class DonationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Donation
+        fields = ["id", "donor_name", "usd_amount"]

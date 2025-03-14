@@ -12,6 +12,7 @@ from .serializers import (
     AnimalSerializer,
     VolunteerProfileSerializer,
     MessageSerializer,
+    DonationSerializer,
 )
 from .models import (
     Note,
@@ -23,6 +24,7 @@ from .models import (
     AnimalStatus,
     UserStatus,
     Message,
+    Donation,
 )
 
 
@@ -250,3 +252,9 @@ class MessageDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         return Message.objects.filter(models.Q(sender=user) | models.Q(receiver=user))
+
+
+class DonationListCreate(generics.ListCreateAPIView):
+    queryset = Donation.objects.all()
+    serializer_class = DonationSerializer
+    permission_classes = [AllowAny]

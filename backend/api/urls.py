@@ -36,4 +36,5 @@ urlpatterns = [
         views.UserStatusChoicesView.as_view(),
         name="user-status-choices",
     ),
+    path("donations/", views.DonationListCreate.as_view(), name="donation-list"),
 ]
