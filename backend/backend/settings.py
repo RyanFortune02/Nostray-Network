@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-5fiqkco)@@w3o@$o=zaupj)*94r55xe_#m6o^dsobuuo8v)d=)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"] #Allowing all hosts
+ALLOWED_HOSTS = ["ryfortune.pythonanywhere.com", "127.0.0.1"] #Allowing all hosts
 
 """
 JWT Authentication Configuration
