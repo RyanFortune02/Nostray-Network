@@ -210,6 +210,7 @@ class Command(BaseCommand):
         HR.permissions.set(
             [
                 view_note,
+                add_note,  # Added general note creation permission
                 # HR-specific permissions
                 hr_view_note,
                 hr_add_note,
