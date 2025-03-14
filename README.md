@@ -55,4 +55,8 @@ python manage.py runserver
 
 - [Database Planning](https://www.drawdb.app/)
 - [extending user class](https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html)
+<<<<<<< Updated upstream
 - [React DOM router w/ netlify](https://answers.netlify.com/t/netlify-page-not-found-when-sharing-react-router-dom-based-links/11744/8)
+=======
+- [fixing hosting on python anywhere breaking the css on the django admin center](https://stackoverflow.com/questions/76985252/pythonanywhere-admin-site-css-is-broken-in-django)
+>>>>>>> Stashed changes
