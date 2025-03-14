@@ -63,7 +63,7 @@ class Command(BaseCommand):
             codename="ceo_add_note", content_type=note_content_type
         )
         ceo_delete_note = Permission.objects.get(
-            codename="ceo_view_note", content_type=note_content_type
+            codename="ceo_delete_note", content_type=note_content_type
         )
 
         ## HR
@@ -74,7 +74,7 @@ class Command(BaseCommand):
             codename="hr_add_note", content_type=note_content_type
         )
         hr_delete_note = Permission.objects.get(
-            codename="hr_view_note", content_type=note_content_type
+            codename="hr_delete_note", content_type=note_content_type
         )
 
         ## Board of Directors
@@ -85,7 +85,7 @@ class Command(BaseCommand):
             codename="board_add_note", content_type=note_content_type
         )
         board_delete_note = Permission.objects.get(
-            codename="board_view_note", content_type=note_content_type
+            codename="board_delete_note", content_type=note_content_type
         )
 
         ## Volunteers
@@ -96,7 +96,7 @@ class Command(BaseCommand):
             codename="volunteer_add_note", content_type=note_content_type
         )
         volunteer_delete_note = Permission.objects.get(
-            codename="volunteer_view_note", content_type=note_content_type
+            codename="volunteer_delete_note", content_type=note_content_type
         )
 
         # Animal permissions
