@@ -96,3 +96,5 @@ A full-stack web application for managing and tracking stray animals. This proje
 - [extending user class](https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html)
 - [React DOM router w/ netlify](https://answers.netlify.com/t/netlify-page-not-found-when-sharing-react-router-dom-based-links/11744/8)
 - [fixing hosting on python anywhere breaking the css on the django admin center](https://stackoverflow.com/questions/76985252/pythonanywhere-admin-site-css-is-broken-in-django)
+
+- [Error handling with axios](https://stackoverflow.com/questions/49967779/axios-handling-errors)
