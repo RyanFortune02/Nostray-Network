@@ -7,6 +7,23 @@ from ...models import Note, VolunteerProfile, Animal, News, Message, Expenses
 
 
 class ePermissionType(Enum):
+    """
+    Standard Django model permission types.
+
+    This enum maps to Django's default permission types that are automatically
+    created for each model. The values correspond to indices in permission lists
+    returned by _get_permissions().
+
+    Attributes:
+        VIEW (0): Permission to view/read model instances
+        ADD (1): Permission to create new model instances
+        CHANGE (2): Permission to modify existing model instances
+        DELETE (3): Permission to remove model instances
+
+    Usage:
+        permissions[ePermissionType.VIEW.value]  # Gets view permission from list
+    """
+
     VIEW = 0
     ADD = 1
     CHANGE = 2
@@ -25,6 +42,29 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         def _get_permissions(model: type[Model], prefix: str = "") -> list[Permission]:
+            """
+            Gets Django model permissions with optional prefix.
+
+            Retrieves the standard Django permissions (view, add, change, delete) for a model.
+            When a prefix is provided, it looks for custom permissions defined in the model's
+            Meta class that start with that prefix.
+
+            The standard permissions are created automatically by Django for all models.
+            Custom prefixed permissions (e.g. "ceo_view_note") must be explicitly defined
+            in the model's Meta class permissions list.
+
+            Args:
+                model: The model class to get permissions for
+                prefix: Optional prefix for custom model permissions (e.g. "ceo" for "ceo_view_note")
+
+            Returns:
+                list: Permission objects in order [view, add, change, delete], with None for
+                    any permissions that don't exist
+
+            Example:
+                >>> _get_permissions(Note, "ceo")
+                [<Permission: api.ceo_view_note>, <Permission: api.ceo_add_note>, ...]
+            """
             content_type: ContentType = ContentType.objects.get_for_model(model)
 
             if prefix != "" and prefix[-1] != "_":
@@ -102,15 +142,17 @@ class Command(BaseCommand):
                 volunteer_note_permissions[ePermissionType.VIEW.value],
                 volunteer_note_permissions[ePermissionType.ADD.value],
                 volunteer_note_permissions[ePermissionType.DELETE.value],
-                # Other model permissions
+                # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.ADD.value],
                 animal_permissions[ePermissionType.CHANGE.value],
                 animal_permissions[ePermissionType.DELETE.value],
+                # News permissions
                 news_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.ADD.value],
                 news_permissions[ePermissionType.CHANGE.value],
                 news_permissions[ePermissionType.DELETE.value],
+                # Message permissions
                 message_permissions[ePermissionType.VIEW.value],
                 message_permissions[ePermissionType.ADD.value],
                 message_permissions[ePermissionType.CHANGE.value],
@@ -126,16 +168,21 @@ class Command(BaseCommand):
         BOARD, _ = Group.objects.get_or_create(name="board")
         BOARD.permissions.set(
             [
+                # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
                 note_permissions[ePermissionType.DELETE.value],
                 note_permissions[ePermissionType.ADD.value],
                 note_permissions[ePermissionType.CHANGE.value],
+                # Board-specific note permissions
                 board_note_permissions[ePermissionType.VIEW.value],
                 board_note_permissions[ePermissionType.ADD.value],
                 board_note_permissions[ePermissionType.DELETE.value],
+                # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
+                # News permissions
                 news_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.ADD.value],
+                # Message permissions
                 message_permissions[ePermissionType.VIEW.value],
                 message_permissions[ePermissionType.ADD.value],
             ]
@@ -144,12 +191,20 @@ class Command(BaseCommand):
         HR, _ = Group.objects.get_or_create(name="hr")
         HR.permissions.set(
             [
+                # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
+                note_permissions[ePermissionType.ADD.value],
+                note_permissions[ePermissionType.CHANGE.value],
+                note_permissions[ePermissionType.DELETE.value],
+                # HR-specific note permissions
                 hr_note_permissions[ePermissionType.VIEW.value],
                 hr_note_permissions[ePermissionType.ADD.value],
                 hr_note_permissions[ePermissionType.DELETE.value],
+                # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
+                # News permissions
                 news_permissions[ePermissionType.VIEW.value],
+                # Message permissions
                 message_permissions[ePermissionType.VIEW.value],
                 message_permissions[ePermissionType.ADD.value],
             ]
@@ -158,16 +213,24 @@ class Command(BaseCommand):
         HEAD_CAREGIVER, _ = Group.objects.get_or_create(name="head caregiver")
         HEAD_CAREGIVER.permissions.set(
             [
+                # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
+                note_permissions[ePermissionType.ADD.value],
+                note_permissions[ePermissionType.CHANGE.value],
+                note_permissions[ePermissionType.DELETE.value],
+                # Volunteer board note permissions
                 volunteer_note_permissions[ePermissionType.VIEW.value],
                 volunteer_note_permissions[ePermissionType.ADD.value],
                 volunteer_note_permissions[ePermissionType.DELETE.value],
+                # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.ADD.value],
                 animal_permissions[ePermissionType.CHANGE.value],
+                # News permissions
                 news_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.ADD.value],
                 news_permissions[ePermissionType.CHANGE.value],
+                # Message permissions
                 message_permissions[ePermissionType.VIEW.value],
                 message_permissions[ePermissionType.ADD.value],
             ]
@@ -176,13 +239,21 @@ class Command(BaseCommand):
         CAREGIVER, _ = Group.objects.get_or_create(name="caregiver")
         CAREGIVER.permissions.set(
             [
+                # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
+                note_permissions[ePermissionType.ADD.value],
+                note_permissions[ePermissionType.CHANGE.value],
+                note_permissions[ePermissionType.DELETE.value],
+                # Volunteer board note permissions
                 volunteer_note_permissions[ePermissionType.VIEW.value],
                 volunteer_note_permissions[ePermissionType.ADD.value],
+                # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.CHANGE.value],
+                # News permissions
                 news_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.ADD.value],
+                # Message permissions
                 message_permissions[ePermissionType.VIEW.value],
                 message_permissions[ePermissionType.ADD.value],
             ]
@@ -191,14 +262,24 @@ class Command(BaseCommand):
         VOLUNTEER, _ = Group.objects.get_or_create(name="volunteer")
         VOLUNTEER.permissions.set(
             [
+                # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
+                note_permissions[ePermissionType.ADD.value],
+                note_permissions[ePermissionType.CHANGE.value],
+                note_permissions[ePermissionType.DELETE.value],
+                # Volunteer board note permissions
                 volunteer_note_permissions[ePermissionType.VIEW.value],
                 volunteer_note_permissions[ePermissionType.ADD.value],
+                volunteer_note_permissions[ePermissionType.DELETE.value],
+                # Profile permissions
                 profile_permissions[ePermissionType.VIEW.value],
                 profile_permissions[ePermissionType.ADD.value],
                 profile_permissions[ePermissionType.CHANGE.value],
+                # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
+                # News permissions
                 news_permissions[ePermissionType.VIEW.value],
+                # Message permissions
                 message_permissions[ePermissionType.VIEW.value],
                 message_permissions[ePermissionType.ADD.value],
                 message_permissions[ePermissionType.CHANGE.value],
