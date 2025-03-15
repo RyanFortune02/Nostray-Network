@@ -22,7 +22,7 @@ const HRPage = () => {
         const activeVolunteers = response.data.filter(
           (profile) => profile.status === "active"
         ).length;
-        // only showing volunteers right now
+        // thinking could add time filter here in future for 'new' cut off
         setTeamStats({
           teamMembers: response.data.length,
           newVolunteers: activeVolunteers,
