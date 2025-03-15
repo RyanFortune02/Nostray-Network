@@ -21,11 +21,11 @@ from .models import (
 class UserBasicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username"]
+        fields = ["id", "username", "email"]
 
 
 class VolunteerProfileSerializer(serializers.ModelSerializer):
-    user = UserBasicSerializer(read_only=True)
+    user = UserBasicSerializer()
 
     class Meta:
         model = VolunteerProfile
