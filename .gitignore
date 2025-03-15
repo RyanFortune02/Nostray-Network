@@ -406,7 +406,7 @@ db.sqlite3
 
 # Django: Environment variable files (keep a sample like .env.example in the repo)
 .env
-.env.*
+.env
 
 # Virtual environments (each developer should create their own)
 env/

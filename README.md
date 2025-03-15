@@ -1,49 +1,88 @@
-# Authorization CRUD
+# Nostray Network
 
-## Steps to run locally
+A full-stack web application for managing and tracking stray animals. This project consists of a Django backend API and a React frontend.
 
-### Backend setup
+## Project Setup
 
-In the `backend` directory...
+### Backend Setup
 
-It is recommended to use a virtual environment. You can create one
-with:
+1. Navigate to the `backend` directory
 
-```sh
-python -m venv .venv
-```
+2. Create and activate a virtual environment:
 
-Then, install the dependencies from the included `requirements.txt` file:
+   ```bash
+   python -m venv .venv
+   ```
 
-```sh
-pip install -r requirements.txt
-```
+3. Install dependencies:
 
-Try to make migrations, in case any were missed:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```sh
-python manage.py makemigrations
-```
+4. Set up environment variables:
 
-Then apply the migrations to the database:
+   - Copy the `.env.example` file to create a new `.env` file
+   - Configure your environment variables as needed
 
-```sh
-python manage.py migrate
-```
+5. Initialize the database:
 
-Ensure the user roles are initialized:
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+   ```
 
-```sh
-python manage.py create_roles
-```
+6. Initialize user roles:
 
-Then start the server with:
+   ```bash
+   python manage.py create_roles
+   ```
 
-```sh
-python manage.py runserver
-```
+7. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
+   The API will be available at http://127.0.0.1:8000
 
-## Resources Used
+### Frontend Setup
+
+1. Navigate to the `frontend` directory
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+
+   - Copy the `.env.example` file to create a new `.env` file
+   - Configure your environment variables as needed
+
+4. Available Scripts:
+   - Start development server: `npm run dev`
+   - Build for production: `npm run build`
+   - Preview production build: `npm run preview`
+
+## Key Dependencies
+
+### Backend
+
+- Django
+- Django REST Framework
+- Simple JWT for authentication
+- Python-dotenv for environment variables
+
+### Frontend
+
+- React
+- Vite
+- React Router DOM for routing
+- Axios for API requests
+- Recharts for data visualization
+- Tailwind CSS for styling
+
+## Resources
 
 - [Authentication/Users](https://www.youtube.com/watch?v=c-QsfbznSXI)
 
@@ -55,8 +94,5 @@ python manage.py runserver
 
 - [Database Planning](https://www.drawdb.app/)
 - [extending user class](https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html)
-<<<<<<< Updated upstream
 - [React DOM router w/ netlify](https://answers.netlify.com/t/netlify-page-not-found-when-sharing-react-router-dom-based-links/11744/8)
-=======
 - [fixing hosting on python anywhere breaking the css on the django admin center](https://stackoverflow.com/questions/76985252/pythonanywhere-admin-site-css-is-broken-in-django)
->>>>>>> Stashed changes
