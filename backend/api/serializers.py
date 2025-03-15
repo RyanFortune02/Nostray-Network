@@ -45,6 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "username",
+            "email",
             "password",
             "bio",
             "hobbies",
@@ -53,7 +54,8 @@ class UserSerializer(serializers.ModelSerializer):
             "status",
         ]
         extra_kwargs = {
-            "password": {"write_only": True}
+            "password": {"write_only": True},
+            "email": {"required": True}
         }  # Want to accept password but not return it
 
     def create(self, validated_data):

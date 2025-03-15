@@ -8,6 +8,7 @@ import LoadingIndicator from "./LoadingIndicator";
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
   const [hobbies, setHobbies] = useState("");
   const [town, setTown] = useState("");
@@ -25,6 +26,7 @@ function Form({ route, method }) {
       const res = await api.post(route, {
         username,
         password,
+        email: method === "register" ? email : undefined,
         bio: method === "register" ? bio : undefined,
         hobbies: method === "register" ? hobbies : undefined,
         town: method === "register" ? town : undefined,
@@ -66,6 +68,14 @@ function Form({ route, method }) {
       />
       {method === "register" && (
         <>
+          <input
+            className="form-input"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+          />
           <input
             className="form-input"
             type="text"
