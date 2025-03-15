@@ -9,6 +9,7 @@ from .models import (
     TaxonomicRank,
     Message,
     Donation,
+    Expenses,
 )
 
 # Uses an ORM (Object RelationalMapping)- maps python objects to corresponding code that needs to be executed in the database
@@ -137,3 +138,9 @@ class DonationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donation
         fields = ["id", "donor_name", "usd_amount"]
+
+
+class ExpensesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Expenses
+        fields = ["id", "usd_amount"]

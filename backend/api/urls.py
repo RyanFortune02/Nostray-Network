@@ -37,4 +37,6 @@ urlpatterns = [
         name="user-status-choices",
     ),
     path("donations/", views.DonationListCreate.as_view(), name="donation-list"),
+    path("funds/", views.FundsView.as_view(), name="funds"),
+    path("expenses/", views.ExpenseListCreate.as_view(), name="expense-list"),
 ]

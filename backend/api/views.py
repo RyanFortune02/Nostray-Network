@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from django.db import models
+from django.db.models import Sum
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,6 +14,7 @@ from .serializers import (
     VolunteerProfileSerializer,
     MessageSerializer,
     DonationSerializer,
+    ExpensesSerializer,
 )
 from .models import (
     Note,
@@ -25,6 +27,7 @@ from .models import (
     UserStatus,
     Message,
     Donation,
+    Expenses,
 )
 
 
@@ -258,3 +261,26 @@ class DonationListCreate(generics.ListCreateAPIView):
     queryset = Donation.objects.all()
     serializer_class = DonationSerializer
     permission_classes = [AllowAny]
+
+
+class ExpenseListCreate(generics.ListCreateAPIView):
+    queryset = Expenses.objects.all()
+    serializer_class = ExpensesSerializer
+    permission_classes = [StrictPermissions]
+
+
+class FundsView(APIView):
+    permission_classes = [StrictPermissions]
+
+    def get(self, request):
+        if not request.user.has_perm("api.view_expenses"):
+            return Response({"error": "Insufficient permissions"}, status=403)
+
+        total_donations = (
+            Donation.objects.aggregate(Sum("usd_amount"))["usd_amount__sum"] or 0
+        )
+        total_expenses = (
+            Expenses.objects.aggregate(Sum("usd_amount"))["usd_amount__sum"] or 0
+        )
+
+        return Response({"available_funds": total_donations - total_expenses})

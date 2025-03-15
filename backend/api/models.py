@@ -224,3 +224,6 @@ class News(models.Model):
 class Donation(models.Model):
     donor_name = models.CharField(max_length=100)
     usd_amount = models.IntegerField(blank=False)
+
+class Expenses(models.Model):
+    usd_amount = models.IntegerField(blank=False)

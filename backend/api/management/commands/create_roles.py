@@ -3,7 +3,7 @@ from enum import Enum
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from ...models import Note, VolunteerProfile, Animal, News, Message
+from ...models import Note, VolunteerProfile, Animal, News, Message, Expenses
 
 
 class ePermissionType(Enum):
@@ -77,6 +77,9 @@ class Command(BaseCommand):
         # Message permissions
         message_permissions = _get_permissions(Message)
 
+        # Expense permissions
+        expense_permissions = _get_permissions(Expenses)
+
         # Set permissions per role
         CEO, _ = Group.objects.get_or_create(name="ceo")
         CEO.permissions.set(
@@ -86,7 +89,6 @@ class Command(BaseCommand):
                 note_permissions[ePermissionType.ADD.value],
                 note_permissions[ePermissionType.CHANGE.value],
                 note_permissions[ePermissionType.DELETE.value],
-                
                 # Board-specific note permissions for CEO
                 ceo_note_permissions[ePermissionType.VIEW.value],
                 ceo_note_permissions[ePermissionType.ADD.value],
@@ -100,7 +102,6 @@ class Command(BaseCommand):
                 volunteer_note_permissions[ePermissionType.VIEW.value],
                 volunteer_note_permissions[ePermissionType.ADD.value],
                 volunteer_note_permissions[ePermissionType.DELETE.value],
-                
                 # Other model permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.ADD.value],
@@ -114,6 +115,11 @@ class Command(BaseCommand):
                 message_permissions[ePermissionType.ADD.value],
                 message_permissions[ePermissionType.CHANGE.value],
                 message_permissions[ePermissionType.DELETE.value],
+                # Expense permissions
+                expense_permissions[ePermissionType.VIEW.value],
+                expense_permissions[ePermissionType.ADD.value],
+                expense_permissions[ePermissionType.CHANGE.value],
+                expense_permissions[ePermissionType.DELETE.value],
             ]
         )
 
