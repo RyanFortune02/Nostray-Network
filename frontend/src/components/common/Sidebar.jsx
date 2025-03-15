@@ -8,6 +8,7 @@ import {
   UserRoundPen,
   UserRound,
   Users,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -38,7 +39,12 @@ const SIDEBAR_ITEMS = [
     color: "#10B981",
     href: "/dashboard/messages",
   },
-  { name: "Board", icon: UserRound, color: "#F87171", href: "/dashboard/board-members" },
+  {
+    name: "Board",
+    icon: UserRound,
+    color: "#F87171",
+    href: "/dashboard/board-members",
+  },
   { name: "HR", icon: Users, color: "#F59E0B", href: "/dashboard/hr" },
   {
     name: "Analytics",
@@ -51,6 +57,12 @@ const SIDEBAR_ITEMS = [
     icon: UserRoundPen,
     color: "#6EE7B7",
     href: "/dashboard/profile",
+  },
+  {
+    name: "Logout",
+    icon: LogOut,
+    color: "#EF4444",
+    href: "/logout",
   },
 ];
 
