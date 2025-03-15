@@ -41,6 +41,9 @@ const Hero = () => {
               >
                 Volunteer Sign-Up
               </Link>
+              <button className='flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 sm:px-8'>
+                Donate Now
+              </button>
             </motion.div>
           </div>
         </motion.div>
