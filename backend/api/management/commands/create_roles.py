@@ -1,7 +1,7 @@
 from django.db.models import Model
 from enum import Enum
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group, Permission, User
 from django.contrib.contenttypes.models import ContentType
 from ...models import Note, VolunteerProfile, Animal, News, Message, Expenses
 
@@ -120,10 +120,18 @@ class Command(BaseCommand):
         # Expense permissions
         expense_permissions = _get_permissions(Expenses)
 
+        # Add User model permissions
+        user_permissions = _get_permissions(User)
+
         # Set permissions per role
         CEO, _ = Group.objects.get_or_create(name="ceo")
         CEO.permissions.set(
             [
+                # User management permissions
+                user_permissions[ePermissionType.VIEW.value],
+                user_permissions[ePermissionType.ADD.value],
+                user_permissions[ePermissionType.CHANGE.value],
+                user_permissions[ePermissionType.DELETE.value],
                 # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
                 note_permissions[ePermissionType.ADD.value],
@@ -191,6 +199,11 @@ class Command(BaseCommand):
         HR, _ = Group.objects.get_or_create(name="hr")
         HR.permissions.set(
             [
+                # User management permissions
+                user_permissions[ePermissionType.VIEW.value],
+                user_permissions[ePermissionType.ADD.value],
+                user_permissions[ePermissionType.CHANGE.value],
+                user_permissions[ePermissionType.DELETE.value],
                 # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
                 note_permissions[ePermissionType.ADD.value],

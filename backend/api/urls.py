@@ -44,4 +44,5 @@ urlpatterns = [
     path("donations/", views.DonationListCreate.as_view(), name="donation-list"),
     path("funds/", views.FundsView.as_view(), name="funds"),
     path("expenses/", views.ExpenseListCreate.as_view(), name="expense-list"),
+    path("users/<int:pk>/", views.DeleteUserView.as_view(), name="user-delete"),
 ]

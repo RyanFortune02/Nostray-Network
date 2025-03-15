@@ -19,9 +19,14 @@ from .models import (
 
 
 class UserBasicSerializer(serializers.ModelSerializer):
+    roles = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ["id", "username", "email"]
+        fields = ["id", "username", "email", "roles"]
+    
+    def get_roles(self, obj):
+        return [group.name for group in obj.groups.all()]
 
 
 class VolunteerProfileSerializer(serializers.ModelSerializer):

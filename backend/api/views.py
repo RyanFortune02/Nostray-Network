@@ -128,6 +128,20 @@ class CreateUserView(generics.CreateAPIView):
         return user
 
 
+class DeleteUserView(generics.DestroyAPIView):
+    """API endpoint for deleting users. Only CEO and HR can delete users."""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [StrictPermissions]
+
+    def get_queryset(self):
+        """Only return users that can be deleted by the current user."""
+        user = self.request.user
+        if user.has_perm('auth.delete_user'):
+            return User.objects.all()
+        return User.objects.none()
+
+
 class TaxonomicRankChoicesView(APIView):
     """
     Returns valid choices for a specific taxonomic rank.
