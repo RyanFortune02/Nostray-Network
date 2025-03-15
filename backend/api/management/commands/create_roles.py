@@ -81,9 +81,27 @@ class Command(BaseCommand):
         CEO, _ = Group.objects.get_or_create(name="ceo")
         CEO.permissions.set(
             [
+                # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
-                note_permissions[ePermissionType.DELETE.value],
                 note_permissions[ePermissionType.ADD.value],
+                note_permissions[ePermissionType.CHANGE.value],
+                note_permissions[ePermissionType.DELETE.value],
+                
+                # Board-specific note permissions for CEO
+                ceo_note_permissions[ePermissionType.VIEW.value],
+                ceo_note_permissions[ePermissionType.ADD.value],
+                ceo_note_permissions[ePermissionType.DELETE.value],
+                hr_note_permissions[ePermissionType.VIEW.value],
+                hr_note_permissions[ePermissionType.ADD.value],
+                hr_note_permissions[ePermissionType.DELETE.value],
+                board_note_permissions[ePermissionType.VIEW.value],
+                board_note_permissions[ePermissionType.ADD.value],
+                board_note_permissions[ePermissionType.DELETE.value],
+                volunteer_note_permissions[ePermissionType.VIEW.value],
+                volunteer_note_permissions[ePermissionType.ADD.value],
+                volunteer_note_permissions[ePermissionType.DELETE.value],
+                
+                # Other model permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.ADD.value],
                 animal_permissions[ePermissionType.CHANGE.value],
@@ -104,6 +122,11 @@ class Command(BaseCommand):
             [
                 note_permissions[ePermissionType.VIEW.value],
                 note_permissions[ePermissionType.DELETE.value],
+                note_permissions[ePermissionType.ADD.value],
+                note_permissions[ePermissionType.CHANGE.value],
+                board_note_permissions[ePermissionType.VIEW.value],
+                board_note_permissions[ePermissionType.ADD.value],
+                board_note_permissions[ePermissionType.DELETE.value],
                 animal_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.ADD.value],
@@ -116,6 +139,9 @@ class Command(BaseCommand):
         HR.permissions.set(
             [
                 note_permissions[ePermissionType.VIEW.value],
+                hr_note_permissions[ePermissionType.VIEW.value],
+                hr_note_permissions[ePermissionType.ADD.value],
+                hr_note_permissions[ePermissionType.DELETE.value],
                 animal_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.VIEW.value],
                 message_permissions[ePermissionType.VIEW.value],
@@ -127,6 +153,9 @@ class Command(BaseCommand):
         HEAD_CAREGIVER.permissions.set(
             [
                 note_permissions[ePermissionType.VIEW.value],
+                volunteer_note_permissions[ePermissionType.VIEW.value],
+                volunteer_note_permissions[ePermissionType.ADD.value],
+                volunteer_note_permissions[ePermissionType.DELETE.value],
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.ADD.value],
                 animal_permissions[ePermissionType.CHANGE.value],
@@ -142,6 +171,8 @@ class Command(BaseCommand):
         CAREGIVER.permissions.set(
             [
                 note_permissions[ePermissionType.VIEW.value],
+                volunteer_note_permissions[ePermissionType.VIEW.value],
+                volunteer_note_permissions[ePermissionType.ADD.value],
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.CHANGE.value],
                 news_permissions[ePermissionType.VIEW.value],
@@ -155,6 +186,8 @@ class Command(BaseCommand):
         VOLUNTEER.permissions.set(
             [
                 note_permissions[ePermissionType.VIEW.value],
+                volunteer_note_permissions[ePermissionType.VIEW.value],
+                volunteer_note_permissions[ePermissionType.ADD.value],
                 profile_permissions[ePermissionType.VIEW.value],
                 profile_permissions[ePermissionType.ADD.value],
                 profile_permissions[ePermissionType.CHANGE.value],
