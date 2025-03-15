@@ -43,10 +43,16 @@ function MessageBoard({
   };
 
   // Check if user has permission to view a specific board
+  // Special handling for volunteers board:
+  // - The role name is 'volunteer' (singular)
+  // - The board name is 'volunteers' (plural)
+  // This mismatch requires explicit handling in the permission check
   const hasPermissionToView = (dept) => {
     if (dept === "all") return true;
     // CEO has access to all boards
     if (userRoles.includes("ceo")) return true;
+    // Handle volunteers board permission check
+    if (dept === "volunteers" && userRoles.includes("volunteer")) return true;
     // Otherwise check if user role matches the department
     return userRoles.includes(dept);
   };

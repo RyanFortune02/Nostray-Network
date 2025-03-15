@@ -117,10 +117,15 @@ function MessageForm({ onClose, onMessageSent }) {
     <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-lg">
       <div className="bg-blue-600 px-3 sm:px-4 md:px-6 py-3 sm:py-4">
         {/* Header for the form */}
-        <h2 className="text-lg sm:text-xl font-semibold text-white">Send New Message</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-white">
+          Send New Message
+        </h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4"
+      >
         {error && (
           <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-50 border border-red-200 text-red-700 text-sm sm:text-base rounded-md">
             {error}
@@ -129,7 +134,9 @@ function MessageForm({ onClose, onMessageSent }) {
 
         {/* Department selection */}
         <div className="space-y-1 sm:space-y-2">
-          <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1 sm:mb-2">To:</label>
+          <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1 sm:mb-2">
+            To:
+          </label>
           <div className="space-y-1 sm:space-y-2">
             {departmentOptions.map((option) => (
               <div key={option.value} className="flex items-center">
