@@ -8,6 +8,9 @@ import LoadingIndicator from "./LoadingIndicator";
 function Form({ route, method }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [bio, setBio] = useState("");
+  const [hobbies, setHobbies] = useState("");
+  const [town, setTown] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -19,7 +22,13 @@ function Form({ route, method }) {
     e.preventDefault();
 
     try {
-      const res = await api.post(route, { username, password });
+      const res = await api.post(route, {
+        username,
+        password,
+        bio: method === "register" ? bio : undefined,
+        hobbies: method === "register" ? hobbies : undefined,
+        town: method === "register" ? town : undefined,
+      });
       if (method === "login") {
         localStorage.setItem(ACCESS_TOKEN, res.data.access);
         localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
@@ -28,7 +37,11 @@ function Form({ route, method }) {
         navigate("/login");
       }
     } catch (error) {
-      alert(error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -51,6 +64,34 @@ function Form({ route, method }) {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
+      {method === "register" && (
+        <>
+          <input
+            className="form-input"
+            type="text"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="Bio"
+            required
+          />
+          <input
+            className="form-input"
+            type="text"
+            value={hobbies}
+            onChange={(e) => setHobbies(e.target.value)}
+            placeholder="Hobbies"
+            required
+          />
+          <input
+            className="form-input"
+            type="text"
+            value={town}
+            onChange={(e) => setTown(e.target.value)}
+            placeholder="Town"
+            required
+          />
+        </>
+      )}
       {loading && <LoadingIndicator />}
       <button className="form-button" type="submit">
         {name}

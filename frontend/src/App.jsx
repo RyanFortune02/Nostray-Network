@@ -63,13 +63,15 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                {/* Animals accessible to all authenticated users */}
+                {/* Animals accessible to CEO, board members, and caregivers */}
                 <Route
                   path="animals"
                   element={
-                    <ProtectedRoute>
+                    <RoleBasedRoute
+                      allowedRoles={["ceo", "board", "caregiver"]}
+                    >
                       <AnimalsPage />
-                    </ProtectedRoute>
+                    </RoleBasedRoute>
                   }
                 />
                 {/* HR page restricted to HR and CEO roles */}
@@ -113,7 +115,7 @@ function App() {
                   path="profile"
                   element={
                     <ProtectedRoute>
-                      <ProfilePage/>
+                      <ProfilePage />
                     </ProtectedRoute>
                   }
                 />
