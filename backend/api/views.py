@@ -221,6 +221,13 @@ class VolunteerProfileDetail(generics.RetrieveUpdateAPIView):
         return self.queryset.get(user=self.request.user)
 
 
+class VolunteerProfileList(generics.ListAPIView):
+    """API endpoint that returns all volunteer profiles."""
+    queryset = VolunteerProfile.objects.select_related('user').all()
+    serializer_class = VolunteerProfileSerializer
+    permission_classes = [StrictPermissions]
+
+
 class ChoicesView(APIView):
     """
     Base view for returning model choices.

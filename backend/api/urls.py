@@ -17,6 +17,11 @@ urlpatterns = [
         name="volunteer-profile",
     ),
     path(
+        "volunteer-profiles/",
+        views.VolunteerProfileList.as_view(),
+        name="volunteer-profiles",
+    ),
+    path(
         "choices/taxonomic/",
         views.TaxonomicRankChoicesView.as_view(),
         name="taxonomic-choices",
