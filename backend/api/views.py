@@ -148,32 +148,41 @@ class TaxonomicRankChoicesView(APIView):
         """
         Get valid choices for requested rank.
         """
-        requested_rank = request.query_params.get("rank")
-        if not requested_rank or requested_rank not in self.RANK_ORDER:
-            return Response({"error": "Invalid or missing rank parameter"}, status=400)
+        params = {}
+        for rank in self.RANK_ORDER:
+            value = request.query_params.get(rank)
+            if value:
+                params[rank] = value
 
-        rank_index = self.RANK_ORDER.index(requested_rank)
+        try:
+            current = TaxonomicHierarchy().TAXONOMIC_HIERARCHY
+            for rank in self.RANK_ORDER:
+                if rank in params:
+                    if params[rank] == "Other":
+                        return Response({"choices": ["Other"]})
+                    elif params[rank] not in current:
+                        return Response({"choices": ["Other"]})
+                    current = current[params[rank]]
+                else:
+                    if isinstance(current, (set, list)):
+                        choices = list(current)
+                        if not choices:
+                            return Response({"choices": ["Other"]})
+                        if "Other" not in choices:
+                            choices.insert(0, "Other")
+                        return Response({"choices": choices})
 
-        current_level = TaxonomicHierarchy().TAXONOMIC_HIERARCHY
+                    if isinstance(current, dict):
+                        choices = list(current.keys())
+                        if "Other" not in choices:
+                            choices.insert(0, "Other")
+                        return Response({"choices": choices})
+                    return Response({"choices": ["Other"]})
 
-        for parent_rank in self.RANK_ORDER[:rank_index]:
-            selected_value = request.query_params.get(parent_rank)
-            if not selected_value:
-                break
+            return Response({"choices": ["Other"]})
 
-            if isinstance(current_level, dict) and selected_value in current_level:
-                current_level = current_level[selected_value]
-            else:
-                return Response(
-                    {"error": f"Invalid {parent_rank} selection"}, status=400
-                )
-
-        if isinstance(current_level, dict):
-            choices = list(current_level.keys())
-        else:
-            choices = current_level if isinstance(current_level, list) else []
-
-        return Response({requested_rank: choices})
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 
 
 class NewsListCreate(generics.ListCreateAPIView):

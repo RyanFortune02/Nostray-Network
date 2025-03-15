@@ -8,29 +8,24 @@ from django.db import models
 
 class eTaxonomicDomain(models.TextChoices):
     OTHER = "Other"
-    MISSING_DATA = "Missing Data"
     EUKARYOTA = "Eukaryota"
 
 class eTaxonomicKingdom(models.TextChoices):
     OTHER = "Other"
-    MISSING_DATA = "Missing Data"
     ANIMALIA = "Animalia"
 
 class eTaxonomicPhylum(models.TextChoices):
     OTHER = "Other"
-    MISSING_DATA = "Missing Data"
     CHORDATA = "Chordata"
 
 class eTaxonomicClass(models.TextChoices):
     OTHER = "Other"
-    MISSING_DATA = "Missing Data"
     ACTINOPTERYGII = "Actinopterygii"
     AVES = "Aves"
     MAMMALIA = "Mammalia"
 
 class eTaxonomicOrder(models.TextChoices):
     OTHER = "Other"
-    MISSING_DATA = "Missing Data"
     ACIPENSERIFORMES = "Acipenseriformes"
     ALBULIFORMES = "Albuliformes"
     AMIIFORMES = "Amiiformes"
@@ -154,7 +149,6 @@ class eTaxonomicOrder(models.TextChoices):
 
 class eTaxonomicFamily(models.TextChoices):
     OTHER = "Other"
-    MISSING_DATA = "Missing Data"
     ACIPENSERIDAE = "Acipenseridae"
     POLYODONTIDAE = "Polyodontidae"
     ALBULIDAE = "Albulidae"
@@ -1141,7 +1135,6 @@ class eTaxonomicFamily(models.TextChoices):
 
 class eTaxonomicGenus(models.TextChoices):
     OTHER = "Other"
-    MISSING_DATA = "Missing Data"
     ACIPENSER = "Acipenser"
     HUSO = "Huso"
     PSEUDOSCAPHIRHYNCHUS = "Pseudoscaphirhynchus"

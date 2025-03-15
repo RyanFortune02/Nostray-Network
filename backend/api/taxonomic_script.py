@@ -120,7 +120,6 @@ def process_taxonomic_file(
             f"class eTaxonomic{rank.capitalize()}(models.TextChoices):"
         )
         classes[rank].append('    OTHER = "Other"')
-        classes[rank].append('    MISSING_DATA = "Missing Data"')
 
     # Parse target path if provided
     target_levels = None
@@ -272,7 +271,7 @@ def process_taxonomic_file(
                     ):
                         missing_rank = RANKS[missing_rank_index]
                         indent = "    " * indent_levels[missing_rank]
-                        hierarchy_handle.write(f'{indent}"MISSING_DATA": {{\n')
+                        hierarchy_handle.write(f'{indent}"Other": {{\n')
                         pending_closing_braces.append(
                             (indent_levels[missing_rank], missing_rank)
                         )
