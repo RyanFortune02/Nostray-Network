@@ -98,3 +98,4 @@ A full-stack web application for managing and tracking stray animals. This proje
 - [fixing hosting on python anywhere breaking the css on the django admin center](https://stackoverflow.com/questions/76985252/pythonanywhere-admin-site-css-is-broken-in-django)
 
 - [Error handling with axios](https://stackoverflow.com/questions/49967779/axios-handling-errors)
+- [Responsive design](https://stackoverflow.com/questions/68723590/how-to-set-an-element-to-show-on-medium-screen-and-below-in-tailwind)

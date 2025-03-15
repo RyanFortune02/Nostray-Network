@@ -25,7 +25,7 @@ function MessageForm({ onClose, onMessageSent }) {
     { value: "ceo", label: "CEO" },
     { value: "hr", label: "HR Staff" },
     { value: "board", label: "Board Members / Head Caregivers / Caregivers" },
-    { value: "volunteers", label: "Volunteers" },
+    { value: "volunteer", label: "Volunteers" },
   ];
 
   // This function is used to toggle the selection of departments

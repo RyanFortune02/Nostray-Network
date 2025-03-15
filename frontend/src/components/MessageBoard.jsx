@@ -37,8 +37,8 @@ function MessageBoard({
     board: messages.filter(
       (message) => message.boards && message.boards.includes("board")
     ),
-    volunteers: messages.filter(
-      (message) => message.boards && message.boards.includes("volunteers")
+    volunteer: messages.filter(
+      (message) => message.boards && message.boards.includes("volunteer")
     ),
   };
 
@@ -52,7 +52,7 @@ function MessageBoard({
     // CEO has access to all boards
     if (userRoles.includes("ceo")) return true;
     // Handle volunteers board permission check
-    if (dept === "volunteers" && userRoles.includes("volunteer")) return true;
+    if (dept === "volunteer" && userRoles.includes("volunteer")) return true;
     // Otherwise check if user role matches the department
     return userRoles.includes(dept);
   };
@@ -66,7 +66,7 @@ function MessageBoard({
         return "HR Staff";
       case "board":
         return "Board Members";
-      case "volunteers":
+      case "volunteer":
         return "Volunteers";
       case "all":
         return "All Messages";
