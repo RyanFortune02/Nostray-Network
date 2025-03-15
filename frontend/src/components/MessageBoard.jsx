@@ -103,9 +103,11 @@ function MessageBoard({
     }
   };
 
-  // Update the count of messages for each department
+  // Update the count of messages for each department, only if user has permission
   const getCounts = (dept) => {
-    return departmentGroups[dept]?.length || 0;
+    return hasPermissionToView(dept)
+      ? departmentGroups[dept]?.length || 0
+      : null;
   };
 
   return (
@@ -136,9 +138,11 @@ function MessageBoard({
             {/* Display icon based on department */}
             {dept === "all" ? <Inbox size={16} /> : <Users size={16} />}
             <span>{formatDepartmentName(dept)}</span>
-            <span className="bg-gray-800 text-xs px-2 py-1 rounded-full">
-              {getCounts(dept)}
-            </span>
+            {getCounts(dept) !== null && (
+              <span className="bg-gray-800 text-xs px-2 py-1 rounded-full">
+                {getCounts(dept)}
+              </span>
+            )}
           </button>
         ))}
       </div>
