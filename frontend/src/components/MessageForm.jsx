@@ -114,23 +114,23 @@ function MessageForm({ onClose, onMessageSent }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl overflow-hidden max-w-lg w-full">
-      <div className="bg-blue-600 px-6 py-4">
+    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-lg">
+      <div className="bg-blue-600 px-3 sm:px-4 md:px-6 py-3 sm:py-4">
         {/* Header for the form */}
-        <h2 className="text-xl font-semibold text-white">Send New Message</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-white">Send New Message</h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6">
+      <form onSubmit={handleSubmit} className="p-3 sm:p-4 md:p-6 space-y-3 sm:space-y-4">
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md">
+          <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-red-50 border border-red-200 text-red-700 text-sm sm:text-base rounded-md">
             {error}
           </div>
         )}
 
         {/* Department selection */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">To:</label>
-          <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
+          <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1 sm:mb-2">To:</label>
+          <div className="space-y-1 sm:space-y-2">
             {departmentOptions.map((option) => (
               <div key={option.value} className="flex items-center">
                 <input
@@ -139,11 +139,11 @@ function MessageForm({ onClose, onMessageSent }) {
                   value={option.value}
                   checked={to.includes(option.value)} // Check if the department is selected
                   onChange={() => handleDepartmentChange(option.value)} // Toggle department selection
-                  className="h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  className="h-4 sm:h-5 w-4 sm:w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
                 <label
                   htmlFor={option.value}
-                  className="ml-2 block text-gray-700"
+                  className="ml-2 block text-gray-700 text-xs sm:text-sm"
                 >
                   {option.label} {/* Display the label of the department */}
                 </label>
@@ -153,10 +153,10 @@ function MessageForm({ onClose, onMessageSent }) {
         </div>
 
         {/* Subject and message fields */}
-        <div className="mb-4">
+        <div className="space-y-1 sm:space-y-2">
           <label
             htmlFor="subject"
-            className="block text-gray-700 font-medium mb-2"
+            className="block text-gray-700 text-xs sm:text-sm font-medium mb-1 sm:mb-2"
           >
             Subject:
           </label>
@@ -165,15 +165,15 @@ function MessageForm({ onClose, onMessageSent }) {
             id="subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black text-sm sm:text-base"
             placeholder="Enter message subject"
           />
         </div>
 
-        <div className="mb-4">
+        <div className="space-y-1 sm:space-y-2">
           <label
             htmlFor="message"
-            className="block text-gray-700 font-medium mb-2"
+            className="block text-gray-700 text-xs sm:text-sm font-medium mb-1 sm:mb-2"
           >
             Message:
           </label>
@@ -181,28 +181,28 @@ function MessageForm({ onClose, onMessageSent }) {
             id="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            rows={5}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black"
+            rows={4}
+            className="w-full px-2 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black text-sm sm:text-base"
             placeholder="Enter your message here"
           />
         </div>
 
         {/* Submit and cancel buttons */}
-        <div className="flex justify-end space-x-3">
+        <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:space-x-3 pt-1 sm:pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-gray-300 rounded-md text-gray-700 text-sm sm:text-base bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 text-sm sm:text-base"
           >
-            {isSubmitting ? "Sending..." : "Send Message"}{" "}
             {/* Change button text based on submission state */}
+            {isSubmitting ? "Sending..." : "Send Message"}
           </button>
         </div>
       </form>

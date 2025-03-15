@@ -70,16 +70,16 @@ function NewsForm({ isOpen, onClose, onSuccess }) {
     if (!isOpen) return null; // Return null if modal is not open to prevent rendering
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-2 sm:p-3 md:p-4 z-50 overflow-y-auto">
             <motion.div
-                className="bg-gray-800 rounded-lg w-full max-w-md shadow-xl overflow-hidden border border-gray-700"
+                className="bg-gray-800 rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md shadow-xl overflow-hidden border border-gray-700 my-4"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
             >
                 {/* Modal header */}
-                <div className="flex justify-between items-center bg-gray-900 border-b border-gray-700 p-4">
-                    <h2 className="text-xl font-semibold text-white-100">Create News Announcement</h2>
+                <div className="flex justify-between items-center bg-gray-900 border-b border-gray-700 p-3 sm:p-4">
+                    <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white-100">Create News Announcement</h2>
                     <button
                         onClick={onClose}
                         className="text-gray-400 hover:text-indigo-300 transition-colors"
@@ -88,16 +88,16 @@ function NewsForm({ isOpen, onClose, onSuccess }) {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-4 space-y-4">
+                <form onSubmit={handleSubmit} className="p-3 sm:p-4 space-y-3 sm:space-y-4 overflow-y-auto max-h-[70vh] md:max-h-[80vh]">
                     {error && (
-                        <div className="bg-red-900/40 border border-red-800 text-red-200 p-3 rounded-lg">
+                        <div className="bg-red-900/40 border border-red-800 text-red-200 p-2 sm:p-3 rounded-lg text-sm sm:text-base">
                             {error}
                         </div>
                     )}
 
                     {/* News Type Select */}
-                    <div className="space-y-2">
-                        <label htmlFor="type" className="block text-sm font-medium text-indigo-400">
+                    <div className="space-y-1 sm:space-y-2">
+                        <label htmlFor="type" className="block text-xs sm:text-sm font-medium text-indigo-400">
                             News Type
                         </label>
                         <select
@@ -106,8 +106,8 @@ function NewsForm({ isOpen, onClose, onSuccess }) {
                             value={formData.type}
                             onChange={handleChange}
                             required
-                            className="w-full p-2.5 bg-gray-700 border border-gray-600 text-white 
-                            rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white 
+                            rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                         >
                             <option value="">Select a type</option>
                             {/* Map through news types to create options */}
@@ -120,8 +120,8 @@ function NewsForm({ isOpen, onClose, onSuccess }) {
                     </div>
 
                     {/* Title Input */}
-                    <div className="space-y-2">
-                        <label htmlFor="title" className="block text-sm font-medium text-indigo-400">
+                    <div className="space-y-1 sm:space-y-2">
+                        <label htmlFor="title" className="block text-xs sm:text-sm font-medium text-indigo-400">
                             Title
                         </label>
                         <input
@@ -131,14 +131,14 @@ function NewsForm({ isOpen, onClose, onSuccess }) {
                             value={formData.title}
                             onChange={handleChange}
                             required
-                            className="w-full p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                             placeholder="News title"
                         />
                     </div>
 
                     {/* Content Input */}
-                    <div className="space-y-2">
-                        <label htmlFor="content" className="block text-sm font-medium text-indigo-400">
+                    <div className="space-y-1 sm:space-y-2">
+                        <label htmlFor="content" className="block text-xs sm:text-sm font-medium text-indigo-400">
                             Content
                         </label>
                         <textarea
@@ -147,18 +147,18 @@ function NewsForm({ isOpen, onClose, onSuccess }) {
                             value={formData.content}
                             onChange={handleChange}
                             required
-                            rows={5}
-                            className="w-full p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                            rows={4}
+                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                             placeholder="News content..."
                         />
                     </div>
 
                     {/* Submit Button */}
-                    <div className="flex justify-end pt-2">
+                    <div className="flex justify-end pt-1 sm:pt-2">
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 shadow-md"
+                            className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 shadow-md text-sm sm:text-base"
                         >
                             {isLoading ? 'Publishing...' : 'Publish News'}
                         </button>

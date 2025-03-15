@@ -18,6 +18,7 @@ import AnalyticsPage from "./DashboardPages/AnalyticsPage";
 import Sidebar from "./components/common/Sidebar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
+import VolunteersPage from "./DashboardPages/VolunteersPage";
 
 function Logout() {
   localStorage.clear();
@@ -76,6 +77,15 @@ function App() {
                     <RoleBasedRoute allowedRoles={["hr", "ceo"]}>
                       <HRPage />
                     </RoleBasedRoute>
+                  }
+                />
+                {/* Volunteer page accessible to all authenticated users */}
+                <Route
+                  path="volunteers"
+                  element={
+                    <ProtectedRoute>
+                      <VolunteersPage />
+                    </ProtectedRoute>
                   }
                 />
                 {/* Messages accessible to all authenticated users */}
