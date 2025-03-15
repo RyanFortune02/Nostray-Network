@@ -13,6 +13,8 @@ import AnimalsPage from "./DashboardPages/AnimalsPage";
 import HRPage from "./DashboardPages/HRPage";
 import MessagesPage from "./DashboardPages/MessagesPage";
 import AnalyticsPage from "./DashboardPages/AnalyticsPage";
+import ProfilePage from "./DashboardPages/ProfilePage";
+import BoardMembersPage from "./DashboardPages/BoardMembersPage";
 
 // Components
 import Sidebar from "./components/common/Sidebar";
@@ -103,6 +105,24 @@ function App() {
                   element={
                     <RoleBasedRoute allowedRoles={["ceo"]}>
                       <AnalyticsPage />
+                    </RoleBasedRoute>
+                  }
+                />
+                {/* Profle page accessible to all authenticated users */}
+                <Route
+                  path="profile"
+                  element={
+                    <ProtectedRoute>
+                      <ProfilePage/>
+                    </ProtectedRoute>
+                  }
+                />
+                {/* Board Members page restricted to CEO and Board Member roles */}
+                <Route
+                  path="board-members"
+                  element={
+                    <RoleBasedRoute allowedRoles={["ceo", "board"]}>
+                      <BoardMembersPage />
                     </RoleBasedRoute>
                   }
                 />

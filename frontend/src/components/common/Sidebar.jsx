@@ -5,7 +5,8 @@ import {
   Mails,
   Menu,
   PawPrint,
-  Settings,
+  UserRoundPen,
+  UserRound,
   Users,
 } from "lucide-react";
 import { useState } from "react";
@@ -37,6 +38,7 @@ const SIDEBAR_ITEMS = [
     color: "#10B981",
     href: "/dashboard/messages",
   },
+  { name: "Board", icon: UserRound, color: "#F87171", href: "/dashboard/board-members" },
   { name: "HR", icon: Users, color: "#F59E0B", href: "/dashboard/hr" },
   {
     name: "Analytics",
@@ -45,10 +47,10 @@ const SIDEBAR_ITEMS = [
     href: "/dashboard/analytics",
   },
   {
-    name: "Settings",
-    icon: Settings,
+    name: "Profile",
+    icon: UserRoundPen,
     color: "#6EE7B7",
-    href: "/dashboard/settings",
+    href: "/dashboard/profile",
   },
 ];
 
