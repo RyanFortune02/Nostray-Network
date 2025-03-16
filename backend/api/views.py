@@ -147,7 +147,7 @@ class TaxonomicRankChoicesView(APIView):
     Returns valid choices for a specific taxonomic rank.
     """
 
-    permission_classes = [StrictPermissions]
+    permission_classes = [AllowAny]
     RANK_ORDER = [
         "domain",
         "kingdom",

@@ -12,7 +12,8 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
         'class_field',
         'order',
         'family',
-        'genus'
+        'genus',
+        'species'
     ];
     // Define the choices for animal status
     const ANIMAL_STATUS_CHOICES = [
@@ -26,7 +27,7 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
         name: '',
         type: {}, // Object to hold taxonomic selections
         status: 'healthy', // Default status
-        caregiver: ''
+        needs_review: true, // Default to true for new animals
     });
 
     // State to manage taxonomic choices for each rank
@@ -37,7 +38,8 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
         class_field: [],
         order: [],
         family: [],
-        genus: []
+        genus: [],
+        species : [],
     });
 
     const [error, setError] = useState(null); 
@@ -56,9 +58,11 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
             // Construct the API request with the current rank and parent selections
             const params = { rank, ...parentSelections };
             const response = await api.get('/api/choices/taxonomic/', { params });
+
+            // Update the taxonomic choices state for the current rank
             setTaxonomicChoices(prev => ({
                 ...prev,
-                [rank]: response.data[rank] || []
+                [rank]: response.data.choices || []
             }));
         } catch (err) {
             console.error(`Error fetching ${rank} choices:`, err);
@@ -85,17 +89,19 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
 
         // if curent rank has a value and it's not the last rank, fetch choices for the next rank
         if (value && rankIndex < TAXONOMIC_RANKS.length - 1) {
-            // Gather parent selections for all previous ranks (including current)
-            const parentSelections = {};
-            for (let i = 0; i <= rankIndex; i++) {
-                const currentRank = TAXONOMIC_RANKS[i];
-                // Only add to parentSelections if the current rank has a value
-                if (newType[currentRank]) {
-                    parentSelections[currentRank] = newType[currentRank];
+            const nextRank = TAXONOMIC_RANKS[rankIndex + 1];
+            if (nextRank !== 'species') {
+                // Gather parent selections for all previous ranks (including current)
+                const parentSelections = {};
+                for (let i = 0; i <= rankIndex; i++) {
+                    const currentRank = TAXONOMIC_RANKS[i];
+                    // Only add to parentSelections if the current rank has a value
+                    if (newType[currentRank]) {
+                        parentSelections[currentRank] = newType[currentRank];
+                    }
                 }
+                fetchTaxonomicChoices(nextRank, parentSelections); // Fetch choices for the next rank based on current selections
             }
-            const nextRank = TAXONOMIC_RANKS[rankIndex + 1]; // Get the next rank in the sequence
-            fetchTaxonomicChoices(nextRank, parentSelections); // Fetch choices for the next rank based on current selections
         }
     };
 
@@ -177,22 +183,35 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                                     <label htmlFor={rank} className="block text-xs sm:text-sm font-medium text-indigo-400">
                                         {rank.charAt(0).toUpperCase() + rank.slice(1).replace('_', ' ')}
                                     </label>
-                                    <select
-                                        id={rank}
-                                        name={rank}
-                                        value={formData.type[rank] || ''}
-                                        onChange={(e) => handleTaxonomicChange(rank, e.target.value)}
-                                        required
-                                        disabled={taxonomicChoices[rank].length === 0}
-                                        className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 text-sm sm:text-base"
-                                    >
-                                        <option value="">Select {rank}</option>
-                                        {taxonomicChoices[rank].map((choice) => (
-                                            <option key={choice} value={choice}>
-                                                {choice}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    {rank === 'species' ? (
+                                        <input
+                                            type="text"
+                                            id={rank}
+                                            name={rank}
+                                            value={formData.type[rank] || ''}
+                                            onChange={(e) => handleTaxonomicChange(rank, e.target.value)}
+                                            required
+                                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                                            placeholder="Enter species name"
+                                        />
+                                    ) : (
+                                        <select
+                                            id={rank}
+                                            name={rank}
+                                            value={formData.type[rank] || ''}
+                                            onChange={(e) => handleTaxonomicChange(rank, e.target.value)}
+                                            required
+                                            disabled={taxonomicChoices[rank].length === 0}
+                                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 text-sm sm:text-base"
+                                        >
+                                            <option value="">Select {rank}</option>
+                                            {taxonomicChoices[rank].map((choice) => (
+                                                <option key={choice} value={choice}>
+                                                    {choice}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -216,21 +235,6 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                                     </option>
                                 ))}
                             </select>
-                        </div>
-
-                        {/* Caregiver Input */}
-                        <div className="space-y-1 sm:space-y-2">
-                            <label htmlFor="caregiver" className="block text-xs sm:text-sm font-medium text-indigo-400">
-                                Caregiver (Optional)
-                            </label>
-                            <input
-                                type="text"
-                                id="caregiver"
-                                name="caregiver"
-                                value={formData.caregiver}
-                                onChange={handleChange}
-                                className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
-                            />
                         </div>
                     </form>
                 </div>
