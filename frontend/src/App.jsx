@@ -24,7 +24,7 @@ import VolunteersPage from "./DashboardPages/VolunteersPage";
 
 function Logout() {
   localStorage.clear();
-  return <Navigate to="/login" />;
+  return <Navigate to="/" />;
 }
 
 function RegisterAndLogout() {
