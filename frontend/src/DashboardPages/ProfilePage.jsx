@@ -8,7 +8,9 @@ const ProfilePage = () => {
   const [userProfiles, setUserProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("staff"); // Display staff members by default
 
+  const staffRoles = ["ceo", "hr", "board", "head caregiver", "caregiver"]; // Define staff roles
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
@@ -26,6 +28,20 @@ const ProfilePage = () => {
     fetchProfiles();
   }, []);
 
+  // Filter profiles based on the active tab
+  const filteredProfiles = userProfiles.filter(profile => {
+    if (!profile.user || !profile.user.roles || !profile.user.roles.length) return false;
+    
+    // Check if the active tab is staff
+    if (activeTab === "staff") {
+      // Show profiles with staff role
+      return profile.user.roles.some(role => staffRoles.includes(role)); 
+    } else {
+      // Show profiles with volunteer role
+      return profile.user.roles.every(role => role === "volunteer");
+    }
+  });
+
   return (
     <div className="flex-1 overflow-auto relative z-10 bg-gray-900">
       <Header title="Profile Page" />
@@ -41,6 +57,30 @@ const ProfilePage = () => {
             Staff and Volunteers Profiles
           </h2>
 
+          {/* Active tabs */}
+          <div className="flex mb-6 border-b border-gray-700">
+            <button
+              className={`px-4 py-2 font-medium text-sm focus:outline-none ${
+                activeTab === "staff"
+                  ? "text-blue-500 border-b-2 border-blue-500"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
+              onClick={() => setActiveTab("staff")}
+            >
+              Staff Members
+            </button>
+            <button
+              className={`px-4 py-2 font-medium text-sm focus:outline-none ${
+                activeTab === "volunteers"
+                  ? "text-blue-500 border-b-2 border-blue-500"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
+              onClick={() => setActiveTab("volunteers")}
+            >
+              Volunteers
+            </button>
+          </div>
+
           {loading && (
             <div className="flex justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -51,8 +91,9 @@ const ProfilePage = () => {
 
           {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {userProfiles.length > 0 ? (
-                userProfiles.map((profile) => (
+              {/* Show staff members or volunteers based on the active tab */}
+              {filteredProfiles.length > 0 ? (
+                filteredProfiles.map((profile) => (
                   <ProfileCard
                     key={profile.user.id}
                     volunteerProfile={profile}
@@ -60,7 +101,7 @@ const ProfilePage = () => {
                 ))
               ) : (
                 <p className="text-gray-400 col-span-2 text-center">
-                  No profiles found.
+                  No {activeTab === "staff" ? "staff" : "volunteer"} profiles found.
                 </p>
               )}
             </div>

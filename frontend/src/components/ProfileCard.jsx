@@ -1,9 +1,18 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { SquareUserRound, Mail } from "lucide-react";
+import { SquareUserRound, Mail, Calendar } from "lucide-react";
 
 function ProfileCard({ volunteerProfile }) {
   const { user, bio, hobbies, town, status } = volunteerProfile;
+
+  // Display the user's join date by month and year
+  const formatJoinDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  };
+
+  // Check if the user has a date_joined property and format it
+  const joinDate = user?.date_joined ? formatJoinDate(user.date_joined) : null;
 
   return (
     <motion.div
@@ -25,6 +34,12 @@ function ProfileCard({ volunteerProfile }) {
               <p className="text-sm flex items-center gap-2 text-gray-300">
                 <Mail size={14} className="text-blue-400" />
                 {user.email}
+              </p>
+            )}
+            {joinDate && (
+              <p className="text-sm flex items-center gap-2 text-gray-300 mt-1">
+                <Calendar size={14} className="text-green-400" />
+                Joined {joinDate}
               </p>
             )}
           </div>

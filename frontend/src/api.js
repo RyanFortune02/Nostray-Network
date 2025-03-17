@@ -27,4 +27,7 @@ api.interceptors.request.use(
 //api for getting the total funds
 api.getFunds = () => api.get('/api/funds/');
 
+//api for getting volunteer profiles
+api.getVolunteerProfiles = () => api.get('/api/volunteer-profiles/');
+
 export default api;
