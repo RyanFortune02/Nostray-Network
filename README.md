@@ -84,6 +84,8 @@ A full-stack web application for managing and tracking stray animals. This proje
 
 ## Resources
 
+- [Backend] (https://django.readthedocs.io/en/stable/contents.html)
+
 - [Authentication/Users](https://www.youtube.com/watch?v=c-QsfbznSXI)
 
 - [User roles in Django](https://medium.com/@farad.dev/managing-user-permissions-and-roles-in-django-a-hands-on-guide-f0ac6fa1f354)
