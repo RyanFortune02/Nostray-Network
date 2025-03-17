@@ -14,9 +14,9 @@ const Hero = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-500 mix-blend-multiply" />
       </div>
-      
+
       <div className="relative px-4 py-24 sm:px-6 sm:py-32 lg:py-40 lg:px-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -30,7 +30,7 @@ const Hero = () => {
             Our mission is to protect and provide shelter for animals in need.
           </p>
           <div className="mt-10 max-w-sm mx-auto sm:max-w-none sm:flex sm:justify-center">
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="space-y-4 sm:space-y-0 sm:mx-auto sm:inline-grid sm:grid-cols-1 sm:gap-5"
@@ -41,9 +41,12 @@ const Hero = () => {
               >
                 Volunteer Sign-Up
               </Link>
-              <button className='flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 sm:px-8'>
+              <Link
+                to="/donations"
+                className="flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 sm:px-8"
+              >
                 Donate Now
-              </button>
+              </Link>
             </motion.div>
           </div>
         </motion.div>
