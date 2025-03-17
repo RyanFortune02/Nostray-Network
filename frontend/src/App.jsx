@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import PublicPage from "./pages/PublicPage";
+import DonationsPage from "./pages/DonationsPage";
 import "./index.css";
 
 // Dashboard Pages
@@ -42,6 +43,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
+        <Route path="/donations" element={<DonationsPage />} />
 
         {/* Dashboard Routes with Sidebar */}
         <Route

@@ -99,3 +99,4 @@ A full-stack web application for managing and tracking stray animals. This proje
 
 - [Error handling with axios](https://stackoverflow.com/questions/49967779/axios-handling-errors)
 - [Responsive design](https://stackoverflow.com/questions/68723590/how-to-set-an-element-to-show-on-medium-screen-and-below-in-tailwind)
+- [For referencing elements instead of pages with React Router](https://dev.to/mindactuate/scroll-to-anchor-element-with-react-router-v6-38op)
