@@ -4,7 +4,7 @@ from django.db.models import Sum
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .taxonomic_hierarchy import TaxonomicHierarchy
 from .serializers import (
     UserSerializer,
@@ -300,11 +300,12 @@ class ExpenseListCreate(generics.ListCreateAPIView):
 
 
 class FundsView(APIView):
-    permission_classes = [StrictPermissions]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        """ took this out bc Strict permissions was causing errors trying to fetch funds''' 
         if not request.user.has_perm("api.view_expenses"):
-            return Response({"error": "Insufficient permissions"}, status=403)
+            return Response({"error": "Insufficient permissions"}, status=403) """
 
         total_donations = (
             Donation.objects.aggregate(Sum("usd_amount"))["usd_amount__sum"] or 0

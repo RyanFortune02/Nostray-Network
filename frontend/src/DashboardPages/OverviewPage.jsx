@@ -13,10 +13,13 @@ const OverviewPage = () => {
     const [news, setNews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [totalFunds, setTotalFunds] = useState(0);
+    const [fundsError, setFundsError] = useState(false);
 
     // Fetch news when the component mounts and listen for news creation events
     useEffect(() => {
         fetchNews();
+        fetchFunds();
 
         // this function will be called when the custom event 'newsCreated' is dispatched
         const refreshNewsOnCreation = () => {
@@ -32,6 +35,18 @@ const OverviewPage = () => {
             window.removeEventListener('newsCreated', refreshNewsOnCreation);
         };
     }, []);
+
+    // Function to fetch funds from API
+    const fetchFunds = async () => {
+        try {
+            const response = await api.getFunds();
+            setTotalFunds(response.data.available_funds);
+            setFundsError(false);
+        } catch (err) {
+            console.error('Error fetching funds:', err);
+            setFundsError(true);
+        }
+    };
 
     // Function to fetch news from API
     const fetchNews = async () => {
@@ -49,6 +64,13 @@ const OverviewPage = () => {
         }
     };
 
+    const formatFundsDisplay = () => {
+        if (fundsError) {
+            return 'Error loading';
+        }
+        return `$${totalFunds.toLocaleString()}`;
+    };
+
     return (
         <div className="flex-1 overflow-auto relative z-10">
             <Header title="Overview" />
@@ -64,7 +86,12 @@ const OverviewPage = () => {
                     {/* Initialize the StatCard component for displaying name, icon, value and color of the card */}
                     <StatCard name="Animals at Safari Park" icon={Dog} value='2,500' color='#f59e0b' />
                     <StatCard name="New animals added" icon={Goal} value='+200' color='#EC4899' />
-                    <StatCard name="Total Fund Raised" icon={HandCoins} value='2,500' color='#10B981' />
+                    <StatCard 
+                        name="Total Donations" 
+                        icon={HandCoins} 
+                        value={formatFundsDisplay()} 
+                        color='#10B981' 
+                    />
                 </motion.div>
 
                 {/* News Management Section */}

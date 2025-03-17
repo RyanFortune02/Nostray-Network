@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const ContactSection = () => {
   return (
-    <section className="py-16 bg-white">
+    <section id="contact-section" className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -15,8 +15,7 @@ const ContactSection = () => {
         >
           <h2 className="text-3xl font-bold text-gray-900">Contact Us</h2>
           <p className="mt-4 text-lg text-gray-600">
-          Want to support our cause? 
-          We'd love to hear from you!
+            Want to support our cause? We'd love to hear from you!
           </p>
         </motion.div>
 
@@ -34,7 +33,10 @@ const ContactSection = () => {
             <h3 className="mt-3 text-lg font-medium text-gray-900">Email</h3>
             <p className="mt-2 text-base text-gray-600">HR Department</p>
             <p className="mt-2">
-              <a href="mailto:hr@nsae.org" className="text-blue-600 hover:text-blue-500">
+              <a
+                href="mailto:hr@nsae.org"
+                className="text-blue-600 hover:text-blue-500"
+              >
                 hr@nsae.org
               </a>
             </p>
@@ -51,16 +53,19 @@ const ContactSection = () => {
               <PhoneCall className="h-6 w-6" />
             </div>
             <h3 className="mt-3 text-lg font-medium text-gray-900">Phone</h3>
-            <p className="mt-2 text-base text-gray-600">Monday-Friday, 9am-5pm</p>
+            <p className="mt-2 text-base text-gray-600">
+              Monday-Friday, 9am-5pm
+            </p>
             <p className="mt-2">
-              <a href="tel:+18000000000" className="text-blue-600 hover:text-blue-500">
+              <a
+                href="tel:+18000000000"
+                className="text-blue-600 hover:text-blue-500"
+              >
                 +1 (800) 000-0000
               </a>
             </p>
           </motion.div>
-
         </div>
-        
       </div>
     </section>
   );
