@@ -298,6 +298,7 @@ class Command(BaseCommand):
                 profile_permissions[ePermissionType.CHANGE.value],
                 # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.ADD.value],
                 # News permissions
                 news_permissions[ePermissionType.VIEW.value],
                 # Message permissions

@@ -1,38 +1,73 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
-
-/* Sample data for the animals */
-const animalsData = [
-    { id: 1, name: "Max", type: "Dog", status: "Healthy", caregivers_id: 2, date_added: "2025-01-15" },
-    { id: 2, name: "Luna", type: "Cat", status: "Under Treatment", caregivers_id: 2, date_added: "2025-02-20" },
-    { id: 3, name: "Rocky", type: "Snake", status: "Healthy", caregivers_id: 4, date_added: "2025-03-01" },
-    { id: 4, name: "Bella", type: "Bird", status: "Critical", caregivers_id: 3, date_added: "2024-04-05" },
-    { id: 5, name: "Charlie", type: "Rabbit", status: "Healthy", caregivers_id: 2, date_added: "2024-05-01" },
-];
+import api from "../../api";
 
 const AnimalsTable = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredAnimals, setFilteredAnimals] = useState(animalsData);
+    const [animals, setAnimals] = useState([]); // Hold all animals fetched from the API
+    const [filteredAnimals, setFilteredAnimals] = useState([]); //Hold the reviewed animals to be displayed in the table
+    const [loading, setLoading] = useState(true); // Loading state for the API call
+    const [error, setError] = useState(null); // Error state for API call
+
+
+    // Fetch animals from API
+    useEffect(() => {
+        const fetchAnimals = async () => {
+            try {
+                setLoading(true);
+                // Fetch animals data from the backend
+                const response = await api.get('/api/animals/');
+                // Filter animals to include only those that have been reviewed
+                const reviewedAnimals = response.data.filter(animal => animal.needs_review === false);
+                setAnimals(reviewedAnimals);
+                setFilteredAnimals(reviewedAnimals);
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching animals:', err);
+                setError('Failed to load animals. Please try again later.');
+                setLoading(false);
+            }
+        };
+
+        fetchAnimals(); // Fetch animals when the component mounts and whenever the component is re-rendered
+    }, []);
+
+      // Display the taxonomic type of the animal
+      const getAnimalType = (typeObj) => {
+        return typeObj.species;
+    };
 
     const handleSearch = (e) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
         // Filter the animals based on the search term
-        const filtered = animalsData.filter(
-            (animal) => animal.name.toLowerCase().includes(term) || animal.type.toLowerCase().includes(term) // Search by name or type
+        const filtered = animals.filter(
+            (animal) => 
+                animal.name.toLowerCase().includes(term) || 
+                (animal.type.species && animal.type.species.toLowerCase().includes(term))
         );
         setFilteredAnimals(filtered);
     };
 
     const getStatusColor = (status) => {
         switch (status) {
-            case "Healthy": return "bg-green-800 text-green-100";
-            case "Under Treatment": return "bg-yellow-800 text-yellow-100";
-            case "Critical": return "bg-red-800 text-red-100";
+            case "healthy": return "bg-green-800 text-green-100";
+            case "sick": return "bg-yellow-800 text-red-100";
+            case "adopted": return "bg-red-800 text-yellow-100";
             default: return "bg-gray-800 text-gray-100";
         }
     };
+
+
+    // If no animals are found after filtering, display a message
+    if (animals.length === 0) {
+        return (
+            <div className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700 flex justify-center items-center h-64">
+                <div className="text-gray-300">No new animals found. Animals are under review.</div>
+            </div>
+        );
+    }
 
     return (
         <motion.div
@@ -62,38 +97,46 @@ const AnimalsTable = () => {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Caregiver ID</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date Added</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700">
-                        {filteredAnimals.map((animal) => (
-                            <motion.tr
-                                key={animal.id}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm font-medium text-gray-100">{animal.name}</div>
+                        {filteredAnimals.length > 0 ? (
+                            filteredAnimals.map((animal) => (
+                                <motion.tr
+                                    key={animal.id}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm font-medium text-gray-100">{animal.name}</div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="text-sm text-gray-300">{getAnimalType(animal.type)}</div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(animal.status)}`}>
+                                            {animal.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                        {new Date(animal.date_added).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                        <button className="text-indigo-400 hover:text-indigo-300 mr-2">Edit</button>
+                                        <button className="text-red-400 hover:text-red-300">Delete</button>
+                                    </td>
+                                </motion.tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5" className="px-6 py-4 text-center text-gray-400">
+                                    No animals found. {searchTerm && "Try a different search term."}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <div className="text-sm text-gray-300">{animal.type}</div>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(animal.status)}`}>
-                                        {animal.status}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{animal.caregivers_id}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{animal.date_added}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                    <button className="text-indigo-400 hover:text-indigo-300 mr-2">Edit</button>
-                                    <button className="text-red-400 hover:text-red-300">Delete</button>
-                                </td>
-                            </motion.tr>
-                        ))}
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

@@ -19,7 +19,6 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
     const ANIMAL_STATUS_CHOICES = [
         { value: 'healthy', label: 'Healthy' },
         { value: 'sick', label: 'Sick' },
-        { value: 'adopted', label: 'Adopted' }
     ];
 
     // Form state to manage input values
