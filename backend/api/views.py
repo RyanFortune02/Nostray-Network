@@ -332,34 +332,20 @@ class FundsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        months = int(request.query_params.get("months", 1))
-        start_date = timezone.now().replace(day=1) - relativedelta(months=months - 1)
-
-        donations = (
-            Donation.objects.filter(timestamp__gte=start_date)
-            .annotate(month=TruncMonth("timestamp"))
-            .values("month")
-            .annotate(total=Sum("usd_amount"))
-            .order_by("-month")
-        )
-
-        expenses = (
-            Expenses.objects.filter(timestamp__gte=start_date)
-            .annotate(month=TruncMonth("timestamp"))
-            .values("month")
-            .annotate(total=Sum("usd_amount"))
-            .order_by("-month")
-        )
-
-        monthly_funds = {}
-        for donation in donations:
-            monthly_funds[donation["month"]] = donation["total"]
-
-        for expense in expenses:
-            month = expense["month"]
-            monthly_funds[month] = monthly_funds.get(month, 0) - expense["total"]
-
-        return Response(dict(sorted(monthly_funds.items(), reverse=True)))
+        # Calculate total donations
+        total_donations = Donation.objects.aggregate(total=Sum('usd_amount'))['total'] or 0
+        
+        # Calculate total expenses
+        total_expenses = Expenses.objects.aggregate(total=Sum('usd_amount'))['total'] or 0
+        
+        # Calculate available funds
+        available_funds = total_donations - total_expenses
+        
+        return Response({
+            'total_donations': total_donations,
+            'total_expenses': total_expenses,
+            'available_funds': available_funds
+        })
 
 
 class ChangeOwnPasswordView(APIView):

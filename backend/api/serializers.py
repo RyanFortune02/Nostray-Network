@@ -161,8 +161,3 @@ class ExpensesSerializer(serializers.ModelSerializer):
         model = Expenses
         fields = ["id", "usd_amount", "timestamp"]
         extra_kwargs = {"timestamp": {"read_only": True}}
-
-
-class MonthlyFundsSerializer(serializers.Serializer):
-    month = serializers.DateTimeField(source="month")
-    total = serializers.IntegerField()
