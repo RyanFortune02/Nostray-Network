@@ -141,9 +141,15 @@ class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
         Only return users that can be managed by the current user.
         """
 
+        perms_map = {
+        "GET": ["auth.view_user"],
+        "PUT": ["auth.change_user"],
+        "PATCH": ["auth.change_user"],
+        "DELETE": ["auth.delete_user"],
+        }
+
         user = self.request.user
-        http = self.request.method.lower()
-        if user.has_perms(f'auth.{http}_user'):
+        if user.has_perms(perms_map[self.request.method]):
             return User.objects.all()
         return User.objects.none()
 
