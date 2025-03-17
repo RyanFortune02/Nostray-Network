@@ -32,6 +32,8 @@ from .models import (
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.db.models.functions import TruncMonth
+from rest_framework.exceptions import PermissionDenied
+from django.contrib.auth.hashers import check_password
 
 
 class eUserRoles:
@@ -358,3 +360,54 @@ class FundsView(APIView):
             monthly_funds[month] = monthly_funds.get(month, 0) - expense["total"]
 
         return Response(dict(sorted(monthly_funds.items(), reverse=True)))
+
+
+class ChangeOwnPasswordView(APIView):
+    """
+    View for users to change their own password after verifying current password.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        current_password = request.data.get("current_password")
+        new_password = request.data.get("new_password")
+
+        if not current_password or not new_password:
+            return Response(
+                {"error": "Both current_password and new_password are required"},
+                status=400,
+            )
+
+        if not check_password(current_password, user.password):
+            return Response({"error": "Current password is incorrect"}, status=400)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({"message": "Password changed successfully"})
+
+
+class AdminChangePasswordView(APIView):
+    """
+    View for admins to change other users' passwords without verification.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        if not request.user.has_perm("auth.change_user"):
+            raise PermissionDenied("You don't have permission to change user passwords")
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+        new_password = request.data.get("new_password")
+        if not new_password:
+            return Response({"error": "new_password is required"}, status=400)
+
+        user.set_password(new_password)
+        user.save()
+        return Response({"message": "Password changed successfully"})

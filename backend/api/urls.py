@@ -1,5 +1,9 @@
 from django.urls import path
 from . import views
+from .views import (
+    ChangeOwnPasswordView,
+    AdminChangePasswordView,
+)
 
 urlpatterns = [
     path("notes/", views.NoteListCreate.as_view(), name="note-list"),
@@ -45,4 +49,12 @@ urlpatterns = [
     path("funds/", views.FundsView.as_view(), name="funds"),
     path("expenses/", views.ExpenseListCreate.as_view(), name="expense-list"),
     path("users/<int:pk>/", views.ManageUserView.as_view(), name="user-management"),
+    path(
+        "change-password/", ChangeOwnPasswordView.as_view(), name="change-own-password"
+    ),
+    path(
+        "admin/change-password/<int:user_id>/",
+        AdminChangePasswordView.as_view(),
+        name="admin-change-password",
+    ),
 ]
