@@ -128,16 +128,22 @@ class CreateUserView(generics.CreateAPIView):
         return user
 
 
-class DeleteUserView(generics.DestroyAPIView):
-    """API endpoint for deleting users. Only CEO and HR can delete users."""
+class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API endpoint for managing users. Only CEO and HR can manage users.
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [StrictPermissions]
 
     def get_queryset(self):
-        """Only return users that can be deleted by the current user."""
+        """
+        Only return users that can be managed by the current user.
+        """
+
         user = self.request.user
-        if user.has_perm('auth.delete_user'):
+        http = self.request.method.lower()
+        if user.has_perms(f'auth.{http}_user'):
             return User.objects.all()
         return User.objects.none()
 
