@@ -24,4 +24,7 @@ api.interceptors.request.use(
     }
 );
 
+//api for getting the total funds
+api.getFunds = () => api.get('/api/funds/');
+
 export default api;
