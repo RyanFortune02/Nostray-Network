@@ -30,4 +30,7 @@ api.getFunds = () => api.get('/api/funds/');
 //api for getting volunteer profiles
 api.getVolunteerProfiles = () => api.get('/api/volunteer-profiles/');
 
+//api for getting animals
+api.getAnimals = () => api.get('/api/animals/');
+
 export default api;

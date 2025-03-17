@@ -15,11 +15,18 @@ const OverviewPage = () => {
     const [error, setError] = useState(null);
     const [totalFunds, setTotalFunds] = useState(0);
     const [fundsError, setFundsError] = useState(false);
+    const [animalsData, setAnimalsData] = useState({
+        totalAnimals: 0,
+        newAnimalsAdded: 0,
+        loading: true,
+        error: false
+    });
 
     // Fetch news when the component mounts and listen for news creation events
     useEffect(() => {
         fetchNews();
         fetchFunds();
+        fetchAnimalsData();
 
         // this function will be called when the custom event 'newsCreated' is dispatched
         const refreshNewsOnCreation = () => {
@@ -35,6 +42,49 @@ const OverviewPage = () => {
             window.removeEventListener('newsCreated', refreshNewsOnCreation);
         };
     }, []);
+
+    // Function to fetch animal data from API
+    const fetchAnimalsData = async () => {
+        // Set loading state to true and error state to false
+        setAnimalsData(prevState => ({
+            ...prevState,
+            loading: true,
+            error: false
+        }));
+        
+        try {
+            const response = await api.getAnimals();
+            
+            // Display all animals that don't need review (approved animals)
+            const approvedAnimals = response.data.filter(animal => animal.needs_review === false);
+            
+            // Calculate number of new animals added in the last 30 days
+            const now = new Date();
+            const LastThirtyDays = new Date(now);
+            LastThirtyDays.setDate(now.getDate() - 30);
+            
+            // Filter animals added in the last 30 days
+            const newAnimals = approvedAnimals.filter(animal => {
+                const addedDate = new Date(animal.date_added);
+                return addedDate >= LastThirtyDays;
+            });
+
+            // Update the state with the new data
+            setAnimalsData({
+                totalAnimals: approvedAnimals.length,
+                newAnimalsAdded: newAnimals.length,
+                loading: false,
+                error: false
+            });
+        } catch (err) {
+            console.error('Error fetching animals data:', err);
+            setAnimalsData(prevState => ({
+                ...prevState,
+                loading: false,
+                error: true
+            }));
+        }
+    };
 
     // Function to fetch funds from API
     const fetchFunds = async () => {
@@ -71,6 +121,16 @@ const OverviewPage = () => {
         return `$${totalFunds.toLocaleString()}`;
     };
 
+    const formatAnimalStats = (stat, isNewAnimals = false) => {
+        if (animalsData.loading) {
+            return 'Loading...';
+        }
+        if (animalsData.error) {
+            return 'Error loading';
+        }
+        return isNewAnimals ? `+${stat}` : stat.toLocaleString();
+    };
+
     return (
         <div className="flex-1 overflow-auto relative z-10">
             <Header title="Overview" />
@@ -84,8 +144,18 @@ const OverviewPage = () => {
                     transition={{ duration: 1 }}
                 >
                     {/* Initialize the StatCard component for displaying name, icon, value and color of the card */}
-                    <StatCard name="Animals at Safari Park" icon={Dog} value='2,500' color='#f59e0b' />
-                    <StatCard name="New animals added" icon={Goal} value='+200' color='#EC4899' />
+                    <StatCard 
+                        name="Animals at Safari Park" 
+                        icon={Dog} 
+                        value={formatAnimalStats(animalsData.totalAnimals)} 
+                        color='#f59e0b' 
+                    />
+                    <StatCard 
+                        name="New animals added (30 days)" 
+                        icon={Goal} 
+                        value={formatAnimalStats(animalsData.newAnimalsAdded, true)} 
+                        color='#EC4899' 
+                    />
                     <StatCard 
                         name="Total Donations" 
                         icon={HandCoins} 
