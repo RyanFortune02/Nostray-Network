@@ -29,6 +29,9 @@ from .models import (
     Donation,
     Expenses,
 )
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
+from django.db.models.functions import TruncMonth
 
 
 class eUserRoles:
@@ -132,6 +135,7 @@ class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
     """
     API endpoint for managing users. Only CEO and HR can manage users.
     """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [StrictPermissions]
@@ -142,10 +146,10 @@ class ManageUserView(generics.RetrieveUpdateDestroyAPIView):
         """
 
         perms_map = {
-        "GET": ["auth.view_user"],
-        "PUT": ["auth.change_user"],
-        "PATCH": ["auth.change_user"],
-        "DELETE": ["auth.delete_user"],
+            "GET": ["auth.view_user"],
+            "PUT": ["auth.change_user"],
+            "PATCH": ["auth.change_user"],
+            "DELETE": ["auth.delete_user"],
         }
 
         user = self.request.user
@@ -249,7 +253,8 @@ class VolunteerProfileDetail(generics.RetrieveUpdateAPIView):
 
 class VolunteerProfileList(generics.ListAPIView):
     """API endpoint that returns all volunteer profiles."""
-    queryset = VolunteerProfile.objects.select_related('user').all()
+
+    queryset = VolunteerProfile.objects.select_related("user").all()
     serializer_class = VolunteerProfileSerializer
     permission_classes = [StrictPermissions]
 
@@ -304,26 +309,52 @@ class DonationListCreate(generics.ListCreateAPIView):
     serializer_class = DonationSerializer
     permission_classes = [AllowAny]
 
+    def get_queryset(self):
+        months = int(self.request.query_params.get("months", 1))
+        start_date = timezone.now().replace(day=1) - relativedelta(months=months - 1)
+        return Donation.objects.filter(timestamp__gte=start_date).order_by("-timestamp")
+
 
 class ExpenseListCreate(generics.ListCreateAPIView):
     queryset = Expenses.objects.all()
     serializer_class = ExpensesSerializer
     permission_classes = [StrictPermissions]
 
+    def get_queryset(self):
+        months = int(self.request.query_params.get("months", 1))
+        start_date = timezone.now().replace(day=1) - relativedelta(months=months - 1)
+        return Expenses.objects.filter(timestamp__gte=start_date).order_by("-timestamp")
+
 
 class FundsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        """ took this out bc Strict permissions was causing errors trying to fetch funds''' 
-        if not request.user.has_perm("api.view_expenses"):
-            return Response({"error": "Insufficient permissions"}, status=403) """
+        months = int(request.query_params.get("months", 1))
+        start_date = timezone.now().replace(day=1) - relativedelta(months=months - 1)
 
-        total_donations = (
-            Donation.objects.aggregate(Sum("usd_amount"))["usd_amount__sum"] or 0
-        )
-        total_expenses = (
-            Expenses.objects.aggregate(Sum("usd_amount"))["usd_amount__sum"] or 0
+        donations = (
+            Donation.objects.filter(timestamp__gte=start_date)
+            .annotate(month=TruncMonth("timestamp"))
+            .values("month")
+            .annotate(total=Sum("usd_amount"))
+            .order_by("-month")
         )
 
-        return Response({"available_funds": total_donations - total_expenses})
+        expenses = (
+            Expenses.objects.filter(timestamp__gte=start_date)
+            .annotate(month=TruncMonth("timestamp"))
+            .values("month")
+            .annotate(total=Sum("usd_amount"))
+            .order_by("-month")
+        )
+
+        monthly_funds = {}
+        for donation in donations:
+            monthly_funds[donation["month"]] = donation["total"]
+
+        for expense in expenses:
+            month = expense["month"]
+            monthly_funds[month] = monthly_funds.get(month, 0) - expense["total"]
+
+        return Response(dict(sorted(monthly_funds.items(), reverse=True)))

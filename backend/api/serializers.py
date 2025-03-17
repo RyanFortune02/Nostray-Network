@@ -24,7 +24,7 @@ class UserBasicSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "email", "roles", "date_joined"]
-    
+
     def get_roles(self, obj):
         return [group.name for group in obj.groups.all()]
 
@@ -60,7 +60,7 @@ class UserSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             "password": {"write_only": True},
-            "email": {"required": True}
+            "email": {"required": True},
         }  # Want to accept password but not return it
 
     def create(self, validated_data):
@@ -115,7 +115,15 @@ class AnimalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Animal
-        fields = ["id", "name", "type", "status", "caregiver", "date_added", "needs_review"]
+        fields = [
+            "id",
+            "name",
+            "type",
+            "status",
+            "caregiver",
+            "date_added",
+            "needs_review",
+        ]
 
     def create(self, validated_data):
         type_data = validated_data.pop("type")
@@ -144,10 +152,17 @@ class MessageSerializer(serializers.ModelSerializer):
 class DonationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Donation
-        fields = ["id", "donor_name", "usd_amount"]
+        fields = ["id", "donor_name", "usd_amount", "timestamp"]
+        extra_kwargs = {"timestamp": {"read_only": True}}
 
 
 class ExpensesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expenses
-        fields = ["id", "usd_amount"]
+        fields = ["id", "usd_amount", "timestamp"]
+        extra_kwargs = {"timestamp": {"read_only": True}}
+
+
+class MonthlyFundsSerializer(serializers.Serializer):
+    month = serializers.DateTimeField(source="month")
+    total = serializers.IntegerField()

@@ -221,9 +221,13 @@ class News(models.Model):
     animal = models.ForeignKey(Animal, on_delete=models.SET_NULL, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+
 class Donation(models.Model):
     donor_name = models.CharField(max_length=100)
     usd_amount = models.IntegerField(blank=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
 
 class Expenses(models.Model):
     usd_amount = models.IntegerField(blank=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
