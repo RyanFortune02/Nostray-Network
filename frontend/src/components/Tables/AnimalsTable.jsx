@@ -9,28 +9,29 @@ const AnimalsTable = () => {
     const [filteredAnimals, setFilteredAnimals] = useState([]); //Hold the reviewed animals to be displayed in the table
     const [loading, setLoading] = useState(true); // Loading state for the API call
     const [error, setError] = useState(null); // Error state for API call
+    const [editingAnimalId, setEditingAnimalId] = useState(null); // Track which animal is being edited
 
 
     // Fetch animals from API
-    useEffect(() => {
-        const fetchAnimals = async () => {
-            try {
-                setLoading(true);
-                // Fetch animals data from the backend
-                const response = await api.get('/api/animals/');
-                // Filter animals to include only those that have been reviewed
-                const reviewedAnimals = response.data.filter(animal => animal.needs_review === false);
-                setAnimals(reviewedAnimals);
-                setFilteredAnimals(reviewedAnimals);
-                setLoading(false);
-            } catch (err) {
-                console.error('Error fetching animals:', err);
-                setError('Failed to load animals. Please try again later.');
-                setLoading(false);
-            }
-        };
+    const fetchAnimals = async () => {
+        try {
+            setLoading(true);
+            // Fetch animals data from the backend
+            const response = await api.get('/api/animals/');
+            // Filter animals to include only those that have been reviewed
+            const reviewedAnimals = response.data.filter(animal => animal.needs_review === false);
+            setAnimals(reviewedAnimals);
+            setFilteredAnimals(reviewedAnimals);
+            setLoading(false);
+        } catch (err) {
+            console.error('Error fetching animals:', err);
+            setError('Failed to load animals. Please try again later.');
+            setLoading(false);
+        }
+    };
 
-        fetchAnimals(); // Fetch animals when the component mounts and whenever the component is re-rendered
+    useEffect(() => {
+        fetchAnimals(); // Fetch animals when the component mounts
     }, []);
 
       // Display the taxonomic type of the animal
@@ -50,6 +51,33 @@ const AnimalsTable = () => {
         setFilteredAnimals(filtered);
     };
 
+    // Update animal status
+    const handleStatusUpdate = async (animalId, newStatus) => {
+        try {
+            await api.patch(`/api/animals/${animalId}/`, { status: newStatus });
+            // After successful update, fetch fresh data from the server
+            await fetchAnimals();
+            setEditingAnimalId(null); // Close the dropdown
+        } catch (err) {
+            console.error('Error updating animal status:', err);
+            alert('Failed to update animal status. Please try again.');
+        }
+    };
+
+    // Delete animal
+    const handleDelete = async (animalId) => {
+        if (window.confirm('Are you sure you want to delete this animal record?')) {
+            try {
+                await api.delete(`/api/animals/${animalId}/`);
+                // After successful deletion, fetch fresh data from the server
+                await fetchAnimals();
+            } catch (err) {
+                console.error('Error deleting animal:', err);
+                alert('Failed to delete animal. Please try again.');
+            }
+        }
+    };
+
     const getStatusColor = (status) => {
         switch (status) {
             case "healthy": return "bg-green-800 text-green-100";
@@ -59,6 +87,8 @@ const AnimalsTable = () => {
         }
     };
 
+    // Available status options
+    const statusOptions = ["healthy", "sick", "adopted"];
 
     // If no animals are found after filtering, display a message
     if (animals.length === 0) {
@@ -117,16 +147,41 @@ const AnimalsTable = () => {
                                         <div className="text-sm text-gray-300">{getAnimalType(animal.type)}</div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(animal.status)}`}>
-                                            {animal.status}
-                                        </span>
+                                        {editingAnimalId === animal.id ? (
+                                            <select
+                                                className="bg-gray-700 text-white text-sm rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                value={animal.status}
+                                                onChange={(e) => handleStatusUpdate(animal.id, e.target.value)}
+                                                onBlur={() => setEditingAnimalId(null)}
+                                            >
+                                                {statusOptions.map(status => (
+                                                    <option key={status} value={status}>
+                                                        {status}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(animal.status)}`}>
+                                                {animal.status}
+                                            </span>
+                                        )}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                                         {new Date(animal.date_added).toLocaleDateString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                                        <button className="text-indigo-400 hover:text-indigo-300 mr-2">Edit</button>
-                                        <button className="text-red-400 hover:text-red-300">Delete</button>
+                                        <button 
+                                            className="text-indigo-400 hover:text-indigo-300 mr-2"
+                                            onClick={() => setEditingAnimalId(animal.id)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button 
+                                            className="text-red-400 hover:text-red-300"
+                                            onClick={() => handleDelete(animal.id)}
+                                        >
+                                            Delete
+                                        </button>
                                     </td>
                                 </motion.tr>
                             ))

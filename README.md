@@ -113,3 +113,4 @@ A full-stack web application for managing and tracking stray animals. This proje
 - [Recharts](https://recharts.org/en-US/examples/PieChartWithCustomizedLabel)
 - [Pop up Modal form](https://www.youtube.com/watch?v=CBuxqDqBnb4)
 - [Create and Triggering event](https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events)
+- [OnBlur event](https://www.geeksforgeeks.org/react-onblur-event/)
