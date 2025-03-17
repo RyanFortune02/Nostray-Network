@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { PawPrint, Clock, User, AlertTriangle, PhoneCall } from 'lucide-react';
 
-const AnimalCard = ({ animal }) => {
+const AnimalCard = ({ animal, onCallMeeting }) => {
     const { name, type, status, needs_review, caregiver, date_added } = animal; 
 
     // Function to get the status color based on the animal's status
@@ -23,6 +23,11 @@ const AnimalCard = ({ animal }) => {
         month: 'short',
         day: 'numeric'
     });
+
+    // Format the taxonomic type for display
+    const formatAnimalType = (typeObj) => {
+        return typeObj.species  
+    };
 
     return (
         <motion.div
@@ -55,7 +60,7 @@ const AnimalCard = ({ animal }) => {
                 transition={{ delay: 0.2 }}
             >
                 <p className="text-sm">
-                    <strong className="text-gray-300">Type:</strong> {type}
+                    <strong className="text-gray-300">Type:</strong> {formatAnimalType(type)}
                 </p>
 
                 <div className="flex items-center">
@@ -73,19 +78,19 @@ const AnimalCard = ({ animal }) => {
                 )}
 
                 <div className="flex items-center justify-between mt-4">
-                    {needs_review && (
+                    {needs_review !== false && (
                         <div className="flex items-center text-yellow-400">
                             <AlertTriangle className="h-4 w-4 mr-1" />
                             <p className="text-sm font-medium">Needs review</p>
                         </div>
                     )}
 
-                    {needs_review && (
+                    {needs_review !== false && (
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium"
-                            onClick={() => alert(`Meeting called about ${name}`)}
+                            onClick={() => onCallMeeting && onCallMeeting(animal)}
                         >
                             <PhoneCall className="h-3.5 w-3.5 mr-1.5" />
                             Call meeting

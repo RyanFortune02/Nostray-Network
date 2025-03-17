@@ -172,6 +172,7 @@ class Command(BaseCommand):
                 expense_permissions[ePermissionType.ADD.value],
                 expense_permissions[ePermissionType.CHANGE.value],
                 expense_permissions[ePermissionType.DELETE.value],
+
             ]
         )
 
@@ -189,6 +190,9 @@ class Command(BaseCommand):
                 board_note_permissions[ePermissionType.DELETE.value],
                 # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
+                animal_permissions[ePermissionType.ADD.value],
+                animal_permissions[ePermissionType.CHANGE.value],
+                animal_permissions[ePermissionType.DELETE.value],                
                 # News permissions
                 news_permissions[ePermissionType.VIEW.value],
                 news_permissions[ePermissionType.ADD.value],

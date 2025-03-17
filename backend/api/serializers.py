@@ -115,7 +115,7 @@ class AnimalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Animal
-        fields = ["id", "name", "type", "status", "caregiver", "date_added"]
+        fields = ["id", "name", "type", "status", "caregiver", "date_added", "needs_review"]
 
     def create(self, validated_data):
         type_data = validated_data.pop("type")
