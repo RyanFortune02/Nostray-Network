@@ -70,32 +70,32 @@ const ExpensesTracker = () => {
             {/* Toggle Button for opening/closing form */}
             <button
                 onClick={toggleModal}
-                className="min-w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="min-w-[140px] w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base"
             >
-                <Plus size={18} />
+                <Plus size={16} className="sm:size-18" />
                 {isModalOpen ? 'Close Expenses' : 'Add Expense'}
             </button>
 
             {/* Modal Form Overlay - Move to document root for better positioning */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
-                    <div className="bg-gray-800 rounded-lg shadow-lg max-w-md w-full">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-3 sm:p-4 md:p-5">
+                    <div className="bg-gray-800 rounded-lg shadow-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
                         {/* Header of Modal */}
-                        <div className="flex justify-evenly items-center border-b border-gray-700 p-4">
-                            <h2 className="text-xl font-semibold text-white">Add Expense</h2>
+                        <div className="flex justify-between items-center border-b border-gray-700 p-3 sm:p-4">
+                            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white">Add Expense</h2>
                             <button
                                 onClick={toggleModal}
                                 className="text-gray-400 hover:text-white focus:outline-none"
                             >
-                                <X size={20} />
+                                <X size={18} className="sm:size-20" />
                             </button>
                         </div>
 
                         {/* Modal Content */}
-                        <div className="p-6">
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="p-4 sm:p-5 md:p-6">
+                            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                                 <div>
-                                    <label htmlFor="expense-amount" className="block text-sm font-medium text-gray-500 mb-1">
+                                    <label htmlFor="expense-amount" className="block text-xs sm:text-sm font-medium text-gray-400 mb-1 sm:mb-2">
                                         Amount (USD)
                                     </label>
                                     <div className="relative">
@@ -107,7 +107,7 @@ const ExpensesTracker = () => {
                                             type="number"
                                             value={amount}
                                             onChange={(e) => setAmount(e.target.value)}
-                                            className="block w-full pl-7 pr-12 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                            className="block w-full pl-7 pr-12 py-1.5 sm:py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
                                             placeholder="0.00"
                                             min="0"
                                         />
@@ -116,20 +116,21 @@ const ExpensesTracker = () => {
 
                                 <button
                                     type="submit"
-                                    className="w-full flex justify-center py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                    className="w-full flex justify-center py-1.5 sm:py-2 px-4 sm:px-6 border border-transparent rounded-md shadow-sm text-sm sm:text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                                    disabled={loading}
                                 >
-                                    Add
+                                    {loading ? 'Adding...' : 'Add'}
                                 </button>
                             </form>
 
                             {success && (
-                                <div className="mt-4 py-2 px-4 rounded-md bg-green-900 text-green-200">
+                                <div className="mt-3 sm:mt-4 py-2 px-3 sm:px-4 rounded-md bg-green-900 text-green-200 text-xs sm:text-sm">
                                     Expense added successfully!
                                 </div>
                             )}
 
                             {error && (
-                                <div className="mt-4 py-2 px-4 rounded-md bg-red-900 text-red-200">
+                                <div className="mt-3 sm:mt-4 py-2 px-3 sm:px-4 rounded-md bg-red-900 text-red-200 text-xs sm:text-sm">
                                     {error}
                                 </div>
                             )}

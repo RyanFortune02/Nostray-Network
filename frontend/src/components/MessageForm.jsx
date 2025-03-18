@@ -114,10 +114,10 @@ function MessageForm({ onClose, onMessageSent }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-lg">
+    <div className="bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl z-[1001]">
       <div className="bg-blue-600 px-3 sm:px-4 md:px-6 py-3 sm:py-4">
         {/* Header for the form */}
-        <h2 className="text-lg sm:text-xl font-semibold text-white">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white">
           Send New Message
         </h2>
       </div>
@@ -137,7 +137,7 @@ function MessageForm({ onClose, onMessageSent }) {
           <label className="block text-gray-700 text-xs sm:text-sm font-medium mb-1 sm:mb-2">
             To:
           </label>
-          <div className="space-y-1 sm:space-y-2">
+          <div className="space-y-1 sm:space-y-2 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
             {departmentOptions.map((option) => (
               <div key={option.value} className="flex items-center">
                 <input

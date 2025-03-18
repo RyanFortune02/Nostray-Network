@@ -132,9 +132,9 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-2 sm:p-3 md:p-4 z-50 overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-2 sm:p-3 md:p-4 lg:p-5 z-50 overflow-y-auto">
             <motion.div
-                className="bg-gray-800 rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md shadow-xl overflow-hidden border border-gray-700 my-4"
+                className="bg-gray-800 rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl shadow-xl overflow-hidden border border-gray-700 my-4"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
@@ -146,14 +146,14 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                         className="text-gray-400 hover:text-indigo-300 transition-colors"
                         aria-label="Close form"
                     >
-                        <X size={20} />
+                        <X size={18} className="sm:size-20" />
                     </button>
                 </div>
 
-                <div className="overflow-y-auto flex-grow">
+                <div className="overflow-y-auto max-h-[70vh] md:max-h-[75vh] lg:max-h-[80vh]">
                     <form onSubmit={handleSubmit} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                         {error && (
-                            <div className="bg-red-900/40 border border-red-800 text-red-200 p-2 sm:p-3 rounded-lg text-sm sm:text-base">
+                            <div className="bg-red-900/40 border border-red-800 text-red-200 p-2 sm:p-3 rounded-lg text-xs sm:text-sm">
                                 {error}
                             </div>
                         )}
@@ -170,7 +170,7 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                                className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-xs sm:text-sm"
                             />
                         </div>
 
@@ -190,7 +190,7 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                                             value={formData.type[rank] || ''}
                                             onChange={(e) => handleTaxonomicChange(rank, e.target.value)}
                                             required
-                                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-xs sm:text-sm"
                                             placeholder="Enter species name"
                                         />
                                     ) : (
@@ -201,7 +201,7 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                                             onChange={(e) => handleTaxonomicChange(rank, e.target.value)}
                                             required
                                             disabled={taxonomicChoices[rank].length === 0}
-                                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 text-sm sm:text-base"
+                                            className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 text-xs sm:text-sm"
                                         >
                                             <option value="">Select {rank}</option>
                                             {taxonomicChoices[rank].map((choice) => (
@@ -226,7 +226,7 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                                 value={formData.status}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                                className="w-full p-2 sm:p-2.5 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-xs sm:text-sm"
                             >
                                 {ANIMAL_STATUS_CHOICES.map((status) => (
                                     <option key={status.value} value={status.value}>
@@ -235,27 +235,27 @@ function AnimalForm({ isOpen, onClose, onSuccess }) {
                                 ))}
                             </select>
                         </div>
-                    </form>
-                </div>
 
-                {/* Buttons */}
-                <div className="border-t border-gray-700 p-3 sm:p-4 sticky bottom-0 bg-gray-800 z-10">
-                    <div className="flex justify-evenly pt-1 sm:pt-2">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors shadow-md text-sm sm:text-base"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 shadow-md text-sm sm:text-base"
-                        >
-                            {isLoading ? 'Adding...' : 'Send Report'}
-                        </button>
-                    </div>
+                        {/* Buttons */}
+                        <div className="border-t border-gray-700 pt-3 sm:pt-4 mt-4 sm:mt-6 sticky bottom-0">
+                            <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3">
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors shadow-md text-xs sm:text-sm"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSubmit}
+                                    disabled={isLoading}
+                                    className="w-full sm:w-auto px-3 sm:px-4 py-1.5 sm:py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50 shadow-md text-xs sm:text-sm"
+                                >
+                                    {isLoading ? 'Adding...' : 'Send Report'}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </motion.div>
         </div>
