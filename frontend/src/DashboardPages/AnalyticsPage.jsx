@@ -24,8 +24,8 @@ const AnalyticsPage = () => {
 
       <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8 gap-8 mb-8">
         {/* Container for both buttons */}
-        <div className="mb-6 flex gap-4">
-          <div className="min-w-[140px]">
+        <div className="mb-6 flex flex-wrap justify-center gap-4">
+          <div className="flex-grow min-w-[200px]">
             <ExpensesTracker />
           </div>
           
@@ -42,14 +42,18 @@ const AnalyticsPage = () => {
           <DonationsChart />
         </div>
         
-        {/* News Form Modal */}
-        <NewsForm
-          isOpen={showNewsModal}
-          onClose={() => setShowNewsModal(false)}
-          onSuccess={notifyNewsCreation}
-        />
+        {/* News Form Modal*/}
+        <AnimatePresence>
+          {showNewsModal && (
+            <NewsForm
+              isOpen={showNewsModal}
+              onClose={() => setShowNewsModal(false)}
+              onSuccess={notifyNewsCreation}
+            />
+          )}
+        </AnimatePresence>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <VolunteersChart />
           <AnimalsChart />
         </div>

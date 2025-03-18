@@ -1,32 +1,50 @@
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../api";
 
 const DonationsChart = () => {
     const [donationData, setDonationData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Fetch donation and expense data from the API
+    // Using a callback to memoize the function and prevent unnecessary re-renders
+    const fetchDonationData = useCallback(async () => {
+        try {
+            setLoading(true);
+            // Get donations and expenses for the last 8 months
+            const donations = await api.get('/api/donations/', { params: { months: 8 } });
+            const expenses = await api.get('/api/expenses/', { params: { months: 8 } });
+            
+            // Process donation and expense data by month
+            const processedData = processFinancialData(donations.data, expenses.data);
+            setDonationData(processedData);
+        } catch (error) {
+            console.error("Failed to fetch donation data:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    // Fetch data on component mount
     useEffect(() => {
-        const fetchDonationData = async () => {
-            try {
-                // Get donations and expenses for the last 8 months
-                const donations = await api.get('/api/donations/', { params: { months: 8 } });
-                const expenses = await api.get('/api/expenses/', { params: { months: 8 } });
-                
-                // Process donation and expense data by month
-                const processedData = processFinancialData(donations.data, expenses.data);
-                setDonationData(processedData);
-            } catch (error) {
-                console.error("Failed to fetch donation data:", error);
-            } finally {
-                setLoading(false);
-            }
+        fetchDonationData();
+    }, [fetchDonationData]);
+
+    // Listen for expenseAdded event to refresh data
+    useEffect(() => {
+        const handleExpenseAdded = () => {
+            console.log("Expense added event received, refreshing donation chart");
+            fetchDonationData(); // Refresh data
         };
 
-        fetchDonationData();
-    }, []);
+        // Event listener to listen for expenseAdded event
+        window.addEventListener('expenseAdded', handleExpenseAdded);
+        
+        // Clean up event listener
+        return () => {
+            window.removeEventListener('expenseAdded', handleExpenseAdded);
+        };
+    }, [fetchDonationData]); // Re-run effect when fetchDonationData changes
 
     // Process donation and expense data by month
     const processFinancialData = (donationsData, expensesData) => {

@@ -104,11 +104,11 @@ function MessagesPage() {
         {/* Modal for sending new message */}
         <AnimatePresence>
           {showModal && (
-            <div className="fixed inset-0 z-50 overflow-hidden">
+            <div className="fixed inset-0 z-[1000] overflow-hidden">
               <div className="absolute inset-0 bg-gray-900 bg-opacity-75" />
               <div className="absolute inset-0 flex items-center justify-center p-4">
                 <motion.div
-                  className="relative bg-white rounded-lg shadow-xl overflow-hidden w-full max-w-lg"
+                  className="relative z-[1001]"
                   initial={{ opacity: 0, y: -50, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 50, scale: 0.95 }}
