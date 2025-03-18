@@ -43,8 +43,6 @@ const MembersTable = () => {
     fetchMembers();
   }, []);
 
-          setError("Failed to delete user");
-        }
   // Handle search
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
@@ -70,44 +68,56 @@ const MembersTable = () => {
       console.log("Status updated successfully in the backend");
       
       // Update local state to reflect the change
-      const updatedMembers = members.map(member => 
-        member.profileId === profileId ? { ...member, status: newStatus } : member
+      const updatedMembers = members.map((member) =>
+        member.profileId === profileId
+          ? { ...member, status: newStatus }
+          : member
       );
-      
+
       setMembers(updatedMembers);
-      
+
       // Also update the filtered members to maintain consistency in the UI
       setFilteredMembers(
-        updatedMembers.filter(member => 
-          member.name.toLowerCase().includes(searchTerm) || 
-          member.email.toLowerCase().includes(searchTerm) || 
-          member.role.toLowerCase().includes(searchTerm)
+        updatedMembers.filter(
+          (member) =>
+            member.name.toLowerCase().includes(searchTerm) ||
+            member.email.toLowerCase().includes(searchTerm) ||
+            member.role.toLowerCase().includes(searchTerm)
         )
       );
-      
+
       // Close the dropdown after successful update
       setEditingUserId(null);
     } catch (err) {
       console.error("Error updating member status:", err);
-      alert(`Failed to update member status: ${err.message || "Unknown error"}`);
+      alert(
+        `Failed to update member status: ${err.message || "Unknown error"}`
+      );
       // We don't close editing mode on error so the user can try again
     }
   };
 
   // Delete a member
-  const handleDelete = async (profileId) => {
+  const handleDelete = async (userId) => {
+    if (!userId) {
+      alert("Cannot delete: User ID is undefined");
+      return;
+    }
+
     if (window.confirm("Are you sure you want to delete this member?")) {
       try {
-        await api.delete(`/api/volunteer-profiles/${profileId}/`);
-        
+        await api.delete(`/api/users/${userId}/`);
+        console.log(`Successfully deleted user with ID: ${userId}`);
+
         // Update local state to remove the deleted member
-        const updatedMembers = members.filter(member => member.profileId !== profileId);
+        const updatedMembers = members.filter((member) => member.id !== userId);
         setMembers(updatedMembers);
         setFilteredMembers(
-          updatedMembers.filter((member) =>
-            member.name.toLowerCase().includes(searchTerm) ||
-            member.email.toLowerCase().includes(searchTerm) ||
-            member.role.toLowerCase().includes(searchTerm)
+          updatedMembers.filter(
+            (member) =>
+              member.name.toLowerCase().includes(searchTerm) ||
+              member.email.toLowerCase().includes(searchTerm) ||
+              member.role.toLowerCase().includes(searchTerm)
           )
         );
       } catch (err) {
@@ -195,7 +205,9 @@ const MembersTable = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-300">{member.email}</div>
+                      <div className="text-sm text-gray-300">
+                        {member.email}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-300 capitalize">
@@ -208,10 +220,12 @@ const MembersTable = () => {
                         <select
                           className="bg-gray-700 text-white text-sm rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={member.status}
-                          onChange={(e) => handleStatusUpdate(member.profileId, e.target.value)}
+                          onChange={(e) =>
+                            handleStatusUpdate(member.profileId, e.target.value)
+                          }
                           // Removed the onBlur handler to prevent prematurely exiting edit mode
                         >
-                          {statusOptions.map(status => (
+                          {statusOptions.map((status) => (
                             <option key={status} value={status}>
                               {status}
                             </option>
@@ -219,9 +233,11 @@ const MembersTable = () => {
                         </select>
                       ) : (
                         // Display mode
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                          member.status
-                        )}`}>
+                        <span
+                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                            member.status
+                          )}`}
+                        >
                           {member.status}
                         </span>
                       )}
@@ -237,7 +253,7 @@ const MembersTable = () => {
                         </button>
                         <button
                           className="text-red-400 hover:text-red-300"
-                          onClick={() => handleDelete(member.profileId)}
+                          onClick={() => handleDelete(member.id)}
                         >
                           <XCircle className="h-5 w-5" />
                           <span className="sr-only">Delete</span>
@@ -248,7 +264,10 @@ const MembersTable = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="px-6 py-4 text-center text-gray-400">
+                  <td
+                    colSpan="5"
+                    className="px-6 py-4 text-center text-gray-400"
+                  >
                     No members found matching your search.
                   </td>
                 </tr>
