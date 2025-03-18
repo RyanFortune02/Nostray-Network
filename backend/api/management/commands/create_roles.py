@@ -191,6 +191,8 @@ class Command(BaseCommand):
                 board_note_permissions[ePermissionType.VIEW.value],
                 board_note_permissions[ePermissionType.ADD.value],
                 board_note_permissions[ePermissionType.DELETE.value],
+                # Profile permissions
+                profile_permissions[ePermissionType.VIEW.value],
                 # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.ADD.value],
@@ -249,6 +251,11 @@ class Command(BaseCommand):
                 volunteer_note_permissions[ePermissionType.VIEW.value],
                 volunteer_note_permissions[ePermissionType.ADD.value],
                 volunteer_note_permissions[ePermissionType.DELETE.value],
+                # Board note permissions (view and add only)
+                board_note_permissions[ePermissionType.VIEW.value],
+                board_note_permissions[ePermissionType.ADD.value],
+                # Profile permissions (view only)
+                profile_permissions[ePermissionType.VIEW.value],
                 # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.ADD.value],
@@ -274,6 +281,11 @@ class Command(BaseCommand):
                 # Volunteer board note permissions
                 volunteer_note_permissions[ePermissionType.VIEW.value],
                 volunteer_note_permissions[ePermissionType.ADD.value],
+                # Board note permissions (view and add only)
+                board_note_permissions[ePermissionType.VIEW.value],
+                board_note_permissions[ePermissionType.ADD.value],
+                # Profile permissions (view only)
+                profile_permissions[ePermissionType.VIEW.value],
                 # Animal permissions
                 animal_permissions[ePermissionType.VIEW.value],
                 animal_permissions[ePermissionType.CHANGE.value],
