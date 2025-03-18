@@ -64,6 +64,17 @@ A full-stack web application for managing and tracking stray animals. This proje
    - Build for production: `npm run build`
    - Preview production build: `npm run preview`
 
+## System Roles
+
+The application includes the following user roles with different permissions:
+
+1. CEO - Full system access
+2. Board Members - Oversight and management access
+3. HR - User management and administrative access
+4. Head Caregivers - Animal care management and team leadership
+5. Caregivers - Animal care and record management
+6. Volunteers - Basic system access and animal reporting
+
 ## Key Dependencies
 
 ### Backend
