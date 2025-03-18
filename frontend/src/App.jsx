@@ -70,7 +70,12 @@ function App() {
                   path="animals"
                   element={
                     <RoleBasedRoute
-                      allowedRoles={["ceo", "board", "caregiver"]}
+                      allowedRoles={[
+                        "ceo",
+                        "board",
+                        "caregiver",
+                        "head caregiver",
+                      ]}
                     >
                       <AnimalsPage />
                     </RoleBasedRoute>

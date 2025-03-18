@@ -53,6 +53,12 @@ function MessageBoard({
     if (userRoles.includes("ceo")) return true;
     // Handle volunteers board permission check
     if (dept === "volunteer" && userRoles.includes("volunteer")) return true;
+    // Allow head caregivers and caregivers to view board messages
+    if (
+      dept === "board" &&
+      (userRoles.includes("head caregiver") || userRoles.includes("caregiver"))
+    )
+      return true;
     // Otherwise check if user role matches the department
     return userRoles.includes(dept);
   };
