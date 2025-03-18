@@ -10,11 +10,10 @@ const MembersTable = () => {
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
-  
+
   // Define status choices directly based on the UserStatus model in backend
   const statusOptions = ["active", "inactive", "temporary leave"];
 
-  
   // Fetch members data
   const fetchMembers = async () => {
     try {
@@ -28,7 +27,7 @@ const MembersTable = () => {
         status: profile.status,
         profileId: profile.id // This is the actual profile ID needed for updates
       }));
-      
+
       setMembers(profiles);
       setFilteredMembers(profiles);
     } catch (err) {
@@ -59,19 +58,17 @@ const MembersTable = () => {
   };
 
   // Update user status
-  const handleStatusUpdate = async (profileId, newStatus) => {
+  const handleStatusUpdate = async (userId, newStatus) => {
     try {
-      console.log(`Updating status for profile ${profileId} to ${newStatus}`);
-      
+      console.log(`Updating status for user ${userId} to ${newStatus}`);
+
       // Make PATCH request to update the member's status
-      await api.updateVolunteerStatus(profileId, newStatus);
+      await api.updateVolunteerStatus(userId, newStatus);
       console.log("Status updated successfully in the backend");
-      
+
       // Update local state to reflect the change
       const updatedMembers = members.map((member) =>
-        member.profileId === profileId
-          ? { ...member, status: newStatus }
-          : member
+        member.id === userId ? { ...member, status: newStatus } : member
       );
 
       setMembers(updatedMembers);
@@ -221,7 +218,7 @@ const MembersTable = () => {
                           className="bg-gray-700 text-white text-sm rounded-md p-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={member.status}
                           onChange={(e) =>
-                            handleStatusUpdate(member.profileId, e.target.value)
+                            handleStatusUpdate(member.id, e.target.value)
                           }
                           // Removed the onBlur handler to prevent prematurely exiting edit mode
                         >
