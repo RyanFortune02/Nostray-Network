@@ -39,7 +39,7 @@ api.createExpense = (data) => api.post('/api/expenses/', data);
 //api for getting user status choices
 api.getUserStatusChoices = () => api.get('/api/choices/user-status/');
 
-//api for updating user status
-api.updateVolunteerStatus = (userId, newstatus) => api.patch(`/api/users/${userId}/`, { status: newstatus });
+//api for updating volunteer profile status
+api.updateVolunteerProfileStatus = (userId, newStatus) => api.patch(`/api/volunteer-profiles/user/${userId}/`, { status: newStatus });
 
 export default api;

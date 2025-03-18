@@ -250,6 +250,9 @@ class VolunteerProfileDetail(generics.RetrieveUpdateAPIView):
     queryset = VolunteerProfile.objects.all()
 
     def get_object(self):
+        user_id = self.kwargs.get('user_id')
+        if user_id:
+            return self.queryset.get(user_id=user_id)
         return self.queryset.get(user=self.request.user)
 
 

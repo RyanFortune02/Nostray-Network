@@ -62,8 +62,8 @@ const MembersTable = () => {
     try {
       console.log(`Updating status for user ${userId} to ${newStatus}`);
 
-      // Make PATCH request to update the member's status
-      await api.updateVolunteerStatus(userId, newStatus);
+      // Update the volunteer profile status using the new API endpoint
+      await api.updateVolunteerProfileStatus(userId, newStatus);
       console.log("Status updated successfully in the backend");
 
       // Update local state to reflect the change

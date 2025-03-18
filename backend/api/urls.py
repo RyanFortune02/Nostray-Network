@@ -26,6 +26,11 @@ urlpatterns = [
         name="volunteer-profiles",
     ),
     path(
+        "volunteer-profiles/user/<int:user_id>/",
+        views.VolunteerProfileDetail.as_view(),
+        name="volunteer-profile-by-user",
+    ),
+    path(
         "choices/taxonomic/",
         views.TaxonomicRankChoicesView.as_view(),
         name="taxonomic-choices",
