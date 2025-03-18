@@ -125,5 +125,6 @@ The application includes the following user roles with different permissions:
 - [Pop up Modal form](https://www.youtube.com/watch?v=CBuxqDqBnb4)
 - [Create and Triggering event](https://developer.mozilla.org/en-US/docs/Web/Events/Creating_and_triggering_events)
 - [OnBlur event](https://www.geeksforgeeks.org/react-onblur-event/)
+- [Team Section TailwindPlus](https://tailwindcss.com/plus/ui-blocks/marketing/sections/team-sections)
 
 - [How to use google map url to hyperlink an address](https://developers.google.com/maps/documentation/urls/get-started)
