@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X , Plus} from 'lucide-react';
 import api from '../api';
 
 const ExpensesTracker = () => {
@@ -46,6 +46,11 @@ const ExpensesTracker = () => {
             // Success handling
             setSuccess(true);
             setAmount(''); // Reset amount field
+            
+            // Dispatch event to notify DonationsChart to refresh data
+            const event = new CustomEvent("expenseAdded");
+            console.log("Dispatching expenseAdded event");
+            window.dispatchEvent(event);
 
             // Reset success message after 3 seconds
             setTimeout(() => {
@@ -61,27 +66,28 @@ const ExpensesTracker = () => {
     };
 
     return (
-        <div className="mb-6">
+        <div className="relative">
             {/* Toggle Button for opening/closing form */}
-            <button 
+            <button
                 onClick={toggleModal}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="min-w-[140px] flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
+                <Plus size={18} />
                 {isModalOpen ? 'Close Expenses' : 'Add Expense'}
             </button>
 
-            {/* Modal Form Overlay */}
+            {/* Modal Form Overlay - Move to document root for better positioning */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4">
                     <div className="bg-gray-800 rounded-lg shadow-lg max-w-md w-full">
                         {/* Header of Modal */}
-                        <div className="flex justify-between items-center border-b border-gray-700 p-4">
+                        <div className="flex justify-evenly items-center border-b border-gray-700 p-4">
                             <h2 className="text-xl font-semibold text-white">Add Expense</h2>
-                            <button 
-                                onClick={toggleModal} 
-                                className="text-gray-400 hover:text-white text-xl font-bold"
+                            <button
+                                onClick={toggleModal}
+                                className="text-gray-400 hover:text-white focus:outline-none"
                             >
-                            {X}
+                                <X size={20} />
                             </button>
                         </div>
 
