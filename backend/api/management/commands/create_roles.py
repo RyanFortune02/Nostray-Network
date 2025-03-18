@@ -134,6 +134,9 @@ class Command(BaseCommand):
                 user_permissions[ePermissionType.DELETE.value],
                 # Profile permissions
                 profile_permissions[ePermissionType.VIEW.value],
+                profile_permissions[ePermissionType.ADD.value],
+                profile_permissions[ePermissionType.CHANGE.value],
+                profile_permissions[ePermissionType.DELETE.value],
                 # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
                 note_permissions[ePermissionType.ADD.value],
@@ -212,6 +215,9 @@ class Command(BaseCommand):
                 user_permissions[ePermissionType.DELETE.value],
                 # Profile permissions
                 profile_permissions[ePermissionType.VIEW.value],
+                profile_permissions[ePermissionType.ADD.value],
+                profile_permissions[ePermissionType.CHANGE.value],
+                profile_permissions[ePermissionType.DELETE.value],
                 # General note permissions
                 note_permissions[ePermissionType.VIEW.value],
                 note_permissions[ePermissionType.ADD.value],

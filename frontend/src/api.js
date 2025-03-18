@@ -36,4 +36,10 @@ api.getAnimals = () => api.get('/api/animals/');
 //api for creating expenses
 api.createExpense = (data) => api.post('/api/expenses/', data);
 
+//api for getting user status choices
+api.getUserStatusChoices = () => api.get('/api/choices/user-status/');
+
+//api for updating volunteer profile status
+api.updateVolunteerStatus = (profileId, newstatus) => api.patch(`/api/volunteer-profiles/${profileId}/`, { status: newstatus });
+
 export default api;
